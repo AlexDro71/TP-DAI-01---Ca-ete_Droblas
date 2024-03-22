@@ -1,7 +1,7 @@
 {
-  "name": "eventos",
+  "name": "eventsos",
   "version": "1.0.0",
-  "description": "events",
+  "description": "eventss",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.1"
+    "express": "^4.19.1",
+    "pg": "^8.11.3"
   }
 }
