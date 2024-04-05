@@ -1,33 +1,35 @@
 import express from "express";
-import { // Punto 2
-    EventsService,
-    EventsService2,
-    EventsService3,
-  } from "../servicios/events-service.js";
+import {EventsService,} from "../servicios/events-service.js";
+ 
     const router = express.Router();
     const evenService = new EventsService();
-    router.get("/",(request,response)=>{
+  
+//Punto 2
+  router.get("/",(request,response)=>{
     const pageSize = req.query.pageSize;
     const page = req.query.page;
 
     const getAllEvents = EventsService.getAllEvents(pageSize, page)
     return response.json(getAllEvents);
 
-})
+  })
 
 // punto 3
-router.get("/", (request, response) => {
+  router.get("/", (request, response) => {
   const name = request.query.name;
   const category = request.query.category;
   const startDate = request.query.startDate;
   const tag = request.query.tag;
   try {
-      const BusquedaEvent = EventosRecolectar.BusquedaEvent(name, category, startDate, tag);
+      const BusquedaEvent = EventosRecolectar.BusquedaEvento(name, category, startDate, tag);
       return response.json(BusquedaEvent);
   } catch(error){
       console.log("Un eror Papu :V")
       return response.json("La hora sad :'v")
   }
-})
+  })
+
+  //
+
 
 export default router;
