@@ -29,7 +29,14 @@ import {EventsService,} from "../servicios/events-service.js";
   }
   })
 
-  //
+  //punto 4
+  router.get("/id", (request, response) => {
+  const id = request.query.id;
+  const pageSize = req.query.pageSize;
+  const page = req.query.page;
+   const detalleEvento = DetalleEvento.DetalleEvento(id);
+   return response.json(DetalleEvento);
+  })
 
 
 export default router;
