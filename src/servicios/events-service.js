@@ -3,7 +3,9 @@ export default class EventsService {
         const pageSize = 10;
         const requestedPage = 0;
         //ir a base de datos...
-        query = 'select * from events limit $(pagesize) offset $(requestedPage)';
+        query = `select *
+        from events 
+        limit '${(pagesize)}' offset '${(requestedPage)}'`;
         const eventsInDB = query.execute();
 
         return{
@@ -29,29 +31,31 @@ export default class EventsService {
         JOIN event_categories ec ON e.id_event_category = ec.id
         JOIN event_tags et ON e.id = et.id_event
         JOIN tags t ON et.id_tag = t.id
-        JOIN event_location el ON e.id_envet_location = el.id ` + queryAgregado + ` limit '${page}' offset '${pageSize}'`
+        JOIN event_location el ON e.id_envet_location = el.id `
+        + queryAgregado + 
+        ` limit '${page}' offset '${pageSize}'`
 
-        if(name){
+        if(name != null){
             queryAgregado += `WHERE e.name = '${categorias.name}'`            
-        }else if(name && sql.includes("WHERE")){
+        }else if(name != null && sql.includes("WHERE")){
             queryAgregado += `AND e.name = '${categorias.name}'`
         }
-        if(startDate){
+        if(startDate != null){
             queryAgregado += `WHERE e.start_date = '${categorias.startDate}'`
 
-        }else if(startDate && sql.includes("WHERE")){
+        }else if(startDate != null && sql.includes("WHERE")){
             queryAgregado += `AND e.start_date = '${categorias.startDate}'`
         }
-        if(category){
+        if(category != null){
             queryAgregado += `WHERE ec.name = '${categorias.category}'`
 
-        }else if(category && sql.includes("WHERE")){
+        }else if(category != null && sql.includes("WHERE")){
             queryAgregado += `AND ec.name = '${categorias.category}'`
         }
-        if(tag){
+        if(tag != null){
             queryAgregado += `WHERE t.name = '${categorias.tag}'`
 
-        }else if(tag && sql.includes("WHERE")){
+        }else if(tag != null && sql.includes("WHERE")){
             queryAgregado += `AND t.name = '${categorias.tag}'`
         }
 
@@ -67,10 +71,44 @@ export default class EventsService {
         JOIN locations L on EL.id_location = L.id 
         JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
         JOIN tags T on ET.id_tag = T.id
-        WHERE E.id = '${id}'`;
+        WHERE E.id = '${id}' 
+        limit '${(pagesize)}' offset '${(requestedPage)}'`;
 
         return sql;
     }
+
+    //punto 5
+listaUsuarios(id, first, last, username, attended, rating){
+    var categorias = [first, last, username, attended, rating];
+    var queryAgregado = "";
+    for(var i = 0; i < categorias.length; i++){
+        if(categorias[i] == null){
+            categorias.pop(i)
+        }
+    }
+    const sql = `SELECT U.first_name, U.last_name, U.username,
+    ER.description, ER.attended, ER.rating
+    FROM users U 
+    JOIN event_enrollments ER on ER.id_user = U.id 
+    JOIN events E on E.id = ER.id_event
+    WHERE E.id = '${id}' 
+    limit '${(pagesize)}' offset '${(requestedPage)}'`
+    if(first != null){
+        queryAgregado += `AND E.first_name = '${categorias.first}'`
+    }
+    if(last != null){
+        queryAgregado += `AND U.last_name = '${categorias.last}'`
+    }
+    if(username != null){
+        queryAgregado += `AND U.username = '${categorias.username}'`
+    }
+    if(attended != null){
+        queryAgregado += `AND ER.attended = '${categorias.attended}'`
+    }
+    if(rating != null){
+        queryAgregado += `AND ER.rating = '${categorias.rating}'`
+    }
+}
 
 }
 
