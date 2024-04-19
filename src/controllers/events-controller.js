@@ -6,8 +6,8 @@ const eventsService = new EventsService();
 
 //Punto 2
 router.get("/", (request, response) => {
-  const pageSize = req.query.pageSize;
-  const page = req.query.page;
+  const pageSize = request.query.pageSize;
+  const page = request.query.page;
 
   const getAllEvents = EventsService.getAllEvents(pageSize, page);
   return response.json(getAllEvents);
@@ -15,8 +15,8 @@ router.get("/", (request, response) => {
 
 // punto 3
 router.get("/", (request, response) => {
-  const pageSize = req.query.pageSize;
-  const page = req.query.page;
+  const pageSize = request.query.pageSize;
+  const page = request.query.page;
   const name = request.query.name;
   const category = request.query.category;
   const startDate = request.query.startDate;
@@ -37,8 +37,8 @@ router.get("/", (request, response) => {
 
 //punto 4
 router.get("/id", (request, response) => {
-  const pageSize = req.query.pageSize;
-  const page = req.query.page;
+  const pageSize = request.query.pageSize;
+  const page = request.query.page;
   const id = request.query.id;
   const detalleEvento = DetalleEvento.DetalleEvento(id);
   return response.json(DetalleEvento);
@@ -46,8 +46,8 @@ router.get("/id", (request, response) => {
 
 //punto 5
 router.get("/", (request, response) => {
-  const pageSize = req.query.pageSize;
-  const page = req.query.page;
+  const pageSize = request.query.pageSize;
+  const page = request.query.page;
   const id = request.query.id;
   const first = request.query.first_name;
   const last = request.query.last_name;

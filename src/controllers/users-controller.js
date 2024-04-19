@@ -1,10 +1,10 @@
 import express from "express";
-import {UsersService,} from "../servicios/users-service";
+import { UsersService } from "../services/users-service.js";
     const router = express.Router();
     const usrs = new EventsService();
     //punto 6
     router.post("/login", (request,response)=>{
-        
+
     })
     router.post("/register", (request,response)=>{
 
@@ -13,6 +13,7 @@ import {UsersService,} from "../servicios/users-service";
     router.post("/id", (request,response)=>{
 
     })
+    //punto 10
 
 
 export default usersController;
