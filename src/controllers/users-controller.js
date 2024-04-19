@@ -1,5 +1,6 @@
 import express from "express";
-import { UsersService } from "../services/users-service.js";
+import UsersService from "../services/users-service.js";
+const userService = new UserService();
     const router = express.Router();
     const usrs = new EventsService();
     //punto 6

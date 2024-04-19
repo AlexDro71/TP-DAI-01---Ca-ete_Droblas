@@ -110,7 +110,47 @@ listaUsuarios(id, first, last, username, attended, rating){
     }
 }
 
+//punto 7
+async crearEvent(eventData) {
+    const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
+    const sql = `
+        INSERT INTO events (name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING *
+    `;
+    const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user];
+    const { rows } = await pool.query(sql, values);
+    return rows[0];
 }
+async getEventById(eventId) {
+    const sql = `
+        SELECT * FROM events
+        WHERE id = $1
+    `;
+    const { rows } = await pool.query(sql, [eventId]);
+    return rows[0];
+}
+async putEvent(eventId, eventData) {
+    const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
+    const sql = `
+        UPDATE events
+        SET name = $1, description = $2, id_event_category = $3, id_event_location = $4, start_date = $5, duration_in_minutes = $6, price = $7, enabled_for_enrollment = $8, max_assistance = $9
+        WHERE id = $10
+        RETURNING *
+    `;
+    const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, eventId];
+    const { rows } = await pool.query(sql, values);
+    return rows[0];
+}
+async borrarEvent(eventId) {
+    const sql = `
+        DELETE FROM events
+        WHERE id = '${eventId}'
+    `;
+    await pool.query(sql, [eventId]);
+}
+}
+
 
 
 

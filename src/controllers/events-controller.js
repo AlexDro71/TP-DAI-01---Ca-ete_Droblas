@@ -70,4 +70,60 @@ router.get("/", (request, response) => {
   }
 });
 
+//punto 8
+router.post("/", async (request, response) => {
+  try {
+      const eventData = request.body;
+      const newEvent = await eventsService.crearEvent(eventData);
+      response.status(201).json(newEvent);
+  } catch (error) {
+      console.error("Error al crear el evento:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+router.put("/:id", async (request, response) => {
+  const { id } = request.params;
+  const eventData = request.body;
+
+  try {
+ 
+      const existingEvent = await eventsService.getEventById(id);
+
+      if (!existingEvent) {
+          return response.status(404).json({ message: "Evento no encontrado" });
+      }
+
+      if (existingEvent.id_creator_user !== eventData.id_creator_user) {
+          return response.status(403).json({ message: "No tienes permiso para editar este evento" });
+      }
+
+      const updatedEvent = await eventsService.putEvent(id, eventData);
+      response.json(updatedEvent);
+  } catch (error) {
+      console.error("Error al editar el evento:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+router.delete("/:id", async (request, response) => {
+  const { id } = request.params;
+
+  try {
+      
+      const existingEvent = await eventsService.getEventById(id);
+      if (!existingEvent) {
+          return response.status(404).json({ message: "Evento no encontrado" });
+      }
+      if (existingEvent.id_creator_user !== request.body.id_creator_user) {
+          return response.status(403).json({ message: "No tienes permiso para eliminar este evento" });
+      }
+      await eventsService.borrarEvent(id);
+      response.status(204).end();
+  } catch (error) {
+      console.error("Error al eliminar el evento:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+
+
+
 export default router;
