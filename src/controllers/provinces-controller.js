@@ -1,5 +1,5 @@
 import express from "express";
-import ProvincesService from "../services/provinces-service.js";
+import ProvincesService from './../servicios/provinces-service.js';
 const provincesService = new ProvincesService();
 const router = express.Router();
 
@@ -13,9 +13,12 @@ router.post("/", async (request, response) => {
     console.error("Error al crear la provincia:", error);
     response.status(500).json({ message: "Error interno del servidor" });
   }
+  
   router.get("/", async (request, response) => {
     try {
       const { pageSize, page } = request.query;
+
+      pageSize = ValdacionesHelerp.EsUnInteger(pageSize, 0)
       const provinces = await provincesService.getAllProvinces(pageSize, page);
       response.json(provinces);
     } catch (error) {

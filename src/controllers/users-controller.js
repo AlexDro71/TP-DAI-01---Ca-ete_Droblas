@@ -1,9 +1,11 @@
 import express from "express";
 import UsersService from "./../servicios/users-service.js";
-const usersService = new UsersService();
+//const usersService = new UsersService();
 const router = express.Router();
 //punto 6
-router.post("/login", (request,response)=>{
+router.post("/login", (request, response)=>{
+    console.log("Login")
+    response.status(200).json();
 
 })
 router.post("/register", (request,response)=>{

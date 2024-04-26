@@ -1,15 +1,13 @@
 import pg from "pg";
-import { DBconfig } from "../db.js";
+import DBconfig from "../db.js";
 
 const client = new pg.Client(DBconfig);
 Client.connect();
 
-export class Bd{
-    async Consulta(sql) {
-        const respuesta = await client.query(sql);
-        return respuesta;
+export default class ProvinceRepository{
+    getAllSync = async () =>{
+        
     }
-    
     //Punto 7
      async crearProvince(name, fullName, latitude, longitude) {
         const sql = `

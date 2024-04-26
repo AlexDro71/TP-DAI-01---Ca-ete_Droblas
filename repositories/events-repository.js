@@ -4,11 +4,8 @@ import DBconfig from "../db.js";
 const client = new pg.Client(DBconfig);
 Client.connect();
 
-export class Bd{
-    async Consulta(sql) {
-        const respuesta = await client.query(sql);
-        return respuesta;
-    }
+export default class EventRepository{
+    getAllSync = async () =>{}
     getAllEvents(){//punto 2
         const pageSize = 10;
         const requestedPage = 0;
