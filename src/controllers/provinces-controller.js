@@ -2,6 +2,8 @@ import express from "express";
 import ProvincesService from "../services/provinces-service.js";
 const provincesService = new ProvincesService();
 const router = express.Router();
+
+//Punto 7
 router.post("/", async (request, response) => {
   try {
     const {name, fullName, latitude, longitude} = request.body;

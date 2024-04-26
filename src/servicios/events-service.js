@@ -63,20 +63,35 @@ export default class EventsService {
     }
 
     DetalleEvento(id){
-        const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, U.id, U.username, U.first_name, U.,last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
-        FROM events E 
-        JOIN users U on E.id_creator_user = U.id 
-        JOIN event_categories EC on E.id_event_category = EC.id 
-        JOIN event_locations EL on E.id_event_location = EL.id 
-        JOIN locations L on EL.id_location = L.id 
-        JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
-        JOIN tags T on ET.id_tag = T.id
-        WHERE E.id = '${id}' 
-        limit '${(pagesize)}' offset '${(requestedPage)}'`;
-
-        return sql;
-    }
-
+            /*  const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, U.id, U.username, U.first_name, U.,last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
+              FROM events E 
+              JOIN users U on E.id_creator_user = U.id 
+              JOIN event_categories EC on E.id_event_category = EC.id 
+              JOIN event_locations EL on E.id_event_location = EL.id 
+              JOIN locations L on EL.id_location = L.id 
+              JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
+              JOIN tags T on ET.id_tag = T.id
+              WHERE E.id = '${id}' 
+              limit '${(pagesize)}' offset '${(requestedPage)}'`; 
+              return sql;
+      */
+              patchEnrollment(
+                  name,
+                  category,
+                  startDate,
+                  tag,
+                  
+              )
+              {
+              const enrollment = {
+               name : "Ejemplo",
+               category : "General",
+               startDate : "2024-01-01", 
+               tag : "ejemplo",
+              };
+              return enrollment 
+          }
+          }
     //punto 5
 listaUsuarios(id, first, last, username, attended, rating){
     var categorias = [first, last, username, attended, rating];
@@ -110,7 +125,7 @@ listaUsuarios(id, first, last, username, attended, rating){
     }
 }
 
-//punto 7
+//punto 8
 async crearEvent(eventData) {
     const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
     const sql = `

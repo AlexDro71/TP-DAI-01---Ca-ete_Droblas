@@ -2,7 +2,7 @@
   "name": "eventsos",
   "version": "1.0.0",
   "description": "eventss",
-  "main": "index.js",
+  "main": "controller.js",
   "type": "module",
   "scripts": {
     "start": "node server.js",
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "start": "^5.1.0"
   }
 }

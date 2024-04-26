@@ -1,4 +1,6 @@
 export default class ProvincesService {
+
+    //Punto 7
     async crearProvince(name, fullName, latitude, longitude) {
         const sql = `
             INSERT INTO provinces (name, full_name, latitude, longitude)
