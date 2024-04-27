@@ -5,8 +5,8 @@ const client = new pg.Client(DBconfig);
 Client.connect();
 
 export default class EventRepository{
-    getAllSync = async () =>{}
-    getAllEvents(){//punto 2
+  
+    async getAllEvents(){//punto 2
         const pageSize = 10;
         const requestedPage = 0;
         //ir a base de datos...
@@ -23,7 +23,7 @@ export default class EventRepository{
         }
         
     }
-     BusquedaEvento(name, category, startDate, tag){//punto 3
+    async BusquedaEvento(name, category, startDate, tag){//punto 3
          var categorias = [name, category, startDate, tag]
         var queryAgregado = "";
         for(var i = 0; i < categorias.length; i++){
@@ -37,37 +37,27 @@ export default class EventRepository{
         JOIN event_categories ec ON e.id_event_category = ec.id
         JOIN event_tags et ON e.id = et.id_event
         JOIN tags t ON et.id_tag = t.id
-        JOIN event_location el ON e.id_envet_location = el.id `
+        JOIN event_location el ON e.id_envet_location = el.id 
+        WHERE 1=1`
         + queryAgregado + 
         ` limit '${page}' offset '${pageSize}'`
 
-        if(name != null){
-            queryAgregado += `WHERE e.name = '${categorias.name}'`            
-        }else if(name != null && sql.includes("WHERE")){
+        if(name != null && sql.includes("WHERE")){
             queryAgregado += `AND e.name = '${categorias.name}'`
         }
-        if(startDate != null){
-            queryAgregado += `WHERE e.start_date = '${categorias.startDate}'`
-
-        }else if(startDate != null && sql.includes("WHERE")){
+        if(startDate != null && sql.includes("WHERE")){
             queryAgregado += `AND e.start_date = '${categorias.startDate}'`
         }
-        if(category != null){
-            queryAgregado += `WHERE ec.name = '${categorias.category}'`
-
-        }else if(category != null && sql.includes("WHERE")){
+        if(category != null && sql.includes("WHERE")){
             queryAgregado += `AND ec.name = '${categorias.category}'`
         }
-        if(tag != null){
-            queryAgregado += `WHERE t.name = '${categorias.tag}'`
-
-        }else if(tag != null && sql.includes("WHERE")){
+        if(tag != null && sql.includes("WHERE")){
             queryAgregado += `AND t.name = '${categorias.tag}'`
         }
 
     }
     //Punto 4
-    DetalleEvento(id){
+    async DetalleEvento(id){
           const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, U.id, U.username, U.first_name, U.,last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
           FROM events E 
           JOIN users U on E.id_creator_user = U.id 
@@ -81,7 +71,7 @@ export default class EventRepository{
           return sql;
     }
     //Punto 5
-    listaUsuarios(id, first, last, username, attended, rating){
+    async listaUsuarios(id, first, last, username, attended, rating){
         var categorias = [first, last, username, attended, rating];
         var queryAgregado = "";
         for(var i = 0; i < categorias.length; i++){
