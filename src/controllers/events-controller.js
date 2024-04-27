@@ -2,15 +2,16 @@ import express from "express";
 import EventsService from "../servicios/events-service.js";
 
 const router = express.Router();
-const eventsService = new EventsService();
+const EventsService = new EventsService();
 
 //Punto 2
 router.get("/", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
 
-  const getAllEvents = EventsService.getAllEvents(pageSize, page);
+  const getAllEvents =  EventsService.getAllEvents(pageSize, page);
   return response.json(getAllEvents);
+
 });
 
 // punto 3
@@ -22,7 +23,7 @@ router.get("/", (request, response) => {
   const startDate = request.query.startDate;
   const tag = request.query.tag;
   try {
-    const BusquedaEvent = EventosRecolectar.BusquedaEvento(
+    const BusquedaEvent = EventsService.BusquedaEvento(
       name,
       category,
       startDate,
@@ -40,7 +41,7 @@ router.get("/id", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const id = request.query.id;
-  const detalleEvento = DetalleEvento.DetalleEvento(id);
+  const detalleEvento = EventsService.DetalleEvento(id);
   return response.json(DetalleEvento);
 });
 
@@ -55,7 +56,7 @@ router.get("/", (request, response) => {
   const attended = request.query.attended;
   const rating = request.query.rating;
   try {
-    const BusquedaEvent = EventosRecolectar.BusquedaEvento(
+    const BusquedaEvent = EventsService.BusquedaEvento(
       id,
       first,
       last,
@@ -74,8 +75,8 @@ router.get("/", (request, response) => {
 router.post("/", async (request, response) => {
   try {
       const eventData = request.body;
-      const newEvent = await eventsService.crearEvent(eventData);
-      response.status(201).json(newEvent);
+      const nuevoEvent = await EventsService.crearEvent(eventData);
+      response.status(201).json(nuevoEvent);
   } catch (error) {
       console.error("Error al crear el evento:", error);
       response.status(500).json({ message: "Error interno del servidor" });
@@ -87,17 +88,17 @@ router.put("/:id", async (request, response) => {
 
   try {
  
-      const existingEvent = await eventsService.getEventById(id);
+      const existe = await EventsService.getEventById(id);
 
-      if (!existingEvent) {
+      if (!existe) {
           return response.status(404).json({ message: "Evento no encontrado" });
       }
 
-      if (existingEvent.id_creator_user !== eventData.id_creator_user) {
-          return response.status(403).json({ message: "No tienes permiso para editar este evento" });
+      if (existe.id_creator_user !== eventData.id_creator_user) {
+          return response.status(403).json({ message: "Id creador evento != id actual" });
       }
 
-      const updatedEvent = await eventsService.putEvent(id, eventData);
+      const updatedEvent = await EventsService.putEvent(id, eventData);
       response.json(updatedEvent);
   } catch (error) {
       console.error("Error al editar el evento:", error);
@@ -109,14 +110,14 @@ router.delete("/:id", async (request, response) => {
 
   try {
       
-      const existingEvent = await eventsService.getEventById(id);
-      if (!existingEvent) {
+      const existe = await EventsService.getEventById(id);
+      if (!existe) {
           return response.status(404).json({ message: "Evento no encontrado" });
       }
-      if (existingEvent.id_creator_user !== request.body.id_creator_user) {
-          return response.status(403).json({ message: "No tienes permiso para eliminar este evento" });
+      if (existe.id_creator_user !== request.body.id_creator_user) {
+          return response.status(403).json({ message: "Id creador evento != id actual" });
       }
-      await eventsService.borrarEvent(id);
+      await EventsService.borrarEvent(id);
       response.status(204).end();
   } catch (error) {
       console.error("Error al eliminar el evento:", error);

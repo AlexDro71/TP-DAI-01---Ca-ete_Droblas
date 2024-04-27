@@ -3,11 +3,7 @@ import UsersService from "./../servicios/users-service.js";
 //const usersService = new UsersService();
 const router = express.Router();
 //punto 6
-router.post("/login", (request, response)=>{
-    console.log("Login")
-    response.status(200).json();
 
-})
 router.post("/register", (request,response)=>{
 
 })
@@ -16,6 +12,8 @@ router.post("/id", (request,response)=>{
 
 })
 //punto 10
-
+router.patch("/id", (request, reponse)=>{
+    
+})
 
 export default router;

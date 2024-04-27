@@ -1,13 +1,13 @@
 import express from "express";
-import ProvincesService from './../servicios/provinces-service.js';
-const provincesService = new ProvincesService();
+import ProvinceService from './../servicios/provinces-service.js';
+const ProvinceService = new ProvinceService();
 const router = express.Router();
 
 //Punto 7
 router.post("/", async (request, response) => {
   try {
     const {name, fullName, latitude, longitude} = request.body;
-    const newProvince = await provincesService.crearProvince(name, fullName, latitude, longitude);
+    const newProvince = await ProvinceService.crearProvince(name, fullName, latitude, longitude);
     response.status(201).json(newProvince);
   } catch (error) {
     console.error("Error al crear la provincia:", error);
@@ -19,7 +19,7 @@ router.post("/", async (request, response) => {
       const { pageSize, page } = request.query;
 
       pageSize = ValdacionesHelerp.EsUnInteger(pageSize, 0)
-      const provinces = await provincesService.getAllProvinces(pageSize, page);
+      const provinces = await ProvinceService.getAllProvinces(pageSize, page);
       response.json(provinces);
     } catch (error) {
       console.error("Error al obtener todas las provincias:", error);
@@ -29,7 +29,7 @@ router.post("/", async (request, response) => {
   router.get("/:id", async (request, response) => {
     try {
       const { id } = request.params;
-      const province = await provincesService.getProvinceById(id);
+      const province = await ProvinceService.getProvinceById(id);
       if (!province) {
         return response
           .status(404)
@@ -45,7 +45,7 @@ router.post("/", async (request, response) => {
     try {
       const { id } = request.params;
       const { name, fullName, latitude, longitude } = request.body;
-      const updatedProvince = await provincesService.putProvince(
+      const updatedProvince = await ProvinceService.putProvince(
         id,
         name,
         fullName,
@@ -61,7 +61,7 @@ router.post("/", async (request, response) => {
   router.delete("/:id", async (request, response) => {
     try {
       const { id } = request.params;
-      await provincesService.borrarProvince(id);
+      await ProvinceService.borrarProvince(id);
       response.status(204).end();
     } catch (error) {
       console.error("Error al eliminar la provincia:", error);

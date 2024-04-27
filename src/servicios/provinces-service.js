@@ -1,6 +1,6 @@
-import ProvinceRepository from './../../repositories/province-repository.js';  
+import ProvinceRepository from './../../src/repositories/province-repository.js';  
 
-export default class ProvincesService{
+export default class ProvinceService{
 
 
     getAllProvinces = async (pageSize = 10, page = 0) =>{
