@@ -1,6 +1,6 @@
 import express from "express";
 import UsersService from "./../servicios/users-service.js";
-//const usersService = new UsersService();
+const usersService = new UsersService();
 const router = express.Router();
 //punto 6
 
