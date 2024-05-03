@@ -1,10 +1,13 @@
 import pg from "pg";
-import DBconfig from "../db.js";
+import { DBconfig } from "../db.js";
 
-const client = new pg.Client(DBconfig);
-Client.connect();
 
 export default class EventRepository{
+    constructor () {
+        const {Client} = pg;
+        this.DBClient = new Client(DBconfig);
+        this.DBClient.connect();
+    }
   
     async getAllEvents(){//punto 2
         const pageSize = 10;
@@ -112,17 +115,24 @@ export default class EventRepository{
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
     `;
-    const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user];
-    const { rows } = await pool.query(sql, values);
-    return rows[0];
+    const { rows } = await this.DBClient.query(sql, [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user]);
+    if(result.rows.length > 0){
+        return rows[0];
+    }else{
+        return console.error("Sad Papu :V");
+    }
     }
     async getEventById(eventId) {
     const sql = `
         SELECT * FROM events
         WHERE id = $1
     `;
-    const { rows } = await pool.query(sql, [eventId]);
-    return rows[0];
+    const { rows } = await this.DBClient.query(sql, [eventId]);
+    if(result.rows.length > 0){
+        return rows[0];
+    }else{
+        return console.error("Sad Papu :V");
+    }
     }
     async putEvent(eventId, eventData) {
     const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
@@ -132,16 +142,19 @@ export default class EventRepository{
         WHERE id = $10
         RETURNING *
     `;
-    const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, eventId];
-    const { rows } = await pool.query(sql, values);
-    return rows[0];
+    const { rows } = await this.DBClient.query(sql, [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, eventId]);
+    if(result.rows.length > 0){
+        return rows[0];
+    }else{
+        return console.error("Sad Papu :V");
+    }
     }
     async borrarEvent(eventId) {
     const sql = `
         DELETE FROM events
         WHERE id = '${eventId}'
     `;
-    await pool.query(sql, [eventId]);
+    await this.DBClient.query(sql, [eventId]);
 }
 }
 

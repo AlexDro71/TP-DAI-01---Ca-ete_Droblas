@@ -56,7 +56,7 @@ router.get("/", (request, response) => {
   const attended = request.query.attended;
   const rating = request.query.rating;
   try {
-    const BusquedaEvent = EventsService.BusquedaEvento(
+    const ListaUsuarios = EventsService.listaUsuarios(
       id,
       first,
       last,
@@ -64,7 +64,7 @@ router.get("/", (request, response) => {
       attended,
       rating
     );
-    return response.json(BusquedaEvent);
+    return response.json(ListaUsuarios);
   } catch (error) {
     console.log("Un eror Papu :V");
     return response.json("La hora sad :'v");
