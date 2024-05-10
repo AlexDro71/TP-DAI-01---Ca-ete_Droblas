@@ -24,9 +24,6 @@ try{
     response.status(500).json({messafe: "Error interno del servidor"})
 }
 })
-//punto 9
-
-//punto 10
 
 
 export default router;

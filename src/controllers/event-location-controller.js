@@ -1,6 +1,6 @@
 import express from "express";
-import EventlocationocationService from "./../servicios/event-location-service.js";
-const eventlocationService = new EventlocationService();
+import EventLocationService from "./../servicios/event-location-service.js";
+const eventlocationService = new EventLocationService();
 const router = express.Router();
 
 router.get("/:id", async (request, response) => {
@@ -30,5 +30,20 @@ router.get("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
-
+  router.get("/:id/event-location", async (request, response)=> {
+    try{
+        const { id } = resquest.params;
+        const eventLocation = await locationService.getAllEventLocationByLocationId(id);
+        if(!eventLocation){
+            return response
+            .status(404)
+            .json({menssage: "localidad no encontrada"});
+        }
+        response.status(200).json(locations)
+    }catch (error) {
+            console.error("error al obtener la localidad por ID", error);
+            response.status(500).json({messange: "Error interno del servidor"})
+        }
+    }
+  )
 export default router;

@@ -140,16 +140,31 @@ router.delete("/:id", async (request, response) => {
 
 
 //punto 10
-router.patch("/id", async (request, reponse)=>{
-    try{
-      const {rating} = request.body;
-      const rate = await eventsService.rateEvent(rating)
-      response.status(200).json(rate)
-    }catch(error){
-      console.error("Error al crear el evento:", error);
+router.patch("/:id/enrollment/:rating", async (request, response) => {
+  try {
+      const { id, rating } = request.params;
+      const event = await eventsService.getEventById(id);
+      if (!event) {
+          return response.status(404).json({ message: "Evento no encontrado" });
+      }
+      if (!event.finalizado) {
+          return response.status(400).json({ message: "El evento aún no ha finalizado" });
+      }
+      const isUserRegistered = await eventsService.checkUserRegistration(id, request.user.id);
+      if (!isUserRegistered) {
+          return response.status(400).json({ message: "El usuario no está registrado en el evento" });
+      }
+      if (rating < 1 || rating > 10) {
+          return response.status(400).json({ message: "El rating debe estar entre 1 y 10" });
+      }
+      await eventsService.saveRating(id, request.user.id, rating, request.body.feedback);
+      response.status(200).json({ message: "Rating registrado exitosamente" });
+  } catch (error) {
+      console.error("Error al registrar el rating del evento:", error);
       response.status(500).json({ message: "Error interno del servidor" });
-    }
-})
+  }
+});
+
 
 
 export default router;
