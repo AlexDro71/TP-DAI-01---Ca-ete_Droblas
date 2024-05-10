@@ -1,6 +1,6 @@
 import express from "express";
-import EventcategoryService from "./../servicios/event-category-service.js";
-const eventcategoryService = new EventcategoryService();
+import EventCategoryService from "./../servicios/event-category-service.js";
+const eventcategoryService = new EventCategoryService();
 const router = express.Router();
 
 

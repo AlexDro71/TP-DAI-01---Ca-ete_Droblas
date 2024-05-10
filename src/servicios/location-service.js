@@ -1,12 +1,12 @@
 import LocationRepository from './../../src/repositories/loaction-repository'; 
-export default class LocationRepository{
+export default class LocationService{
     getAlllocations = async () =>{
-        const repo = new EventLocationRepository();
+        const repo = new LocationRepository();
         const returnArray = await repo.getAlllocations();
         return returnArray;
     }
     getlocationById = async (Id) =>{
-        const repo = new EventLocationRepository();
+        const repo = new LocationRepository();
         const returnArray = await repo.getlocationById(Id);
         return returnArray;
     }

@@ -1,5 +1,5 @@
 import EventLocationRepository from './../../src/repositories/event-loaction-repository'; 
-export default class EventlocationService{
+export default class EventLocationService{
     getAllEventlocations = async () =>{
         const repo = new EventLocationRepository();
         const returnArray = await repo.getAllEventlocations();

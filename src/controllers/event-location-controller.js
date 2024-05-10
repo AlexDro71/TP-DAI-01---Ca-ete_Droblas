@@ -1,6 +1,6 @@
 import express from "express";
-import EventlocationocationService from "./../servicios/event-location-service.js";
-const eventlocationService = new EventlocationService();
+import EventLocationService from "./../servicios/event-location-service.js";
+const eventlocationService = new EventLocationService();
 const router = express.Router();
 
 router.get("/:id", async (request, response) => {

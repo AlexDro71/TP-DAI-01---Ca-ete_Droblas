@@ -1,5 +1,5 @@
 import EventCategoryRepository from '../repositories/event-category-repository'; 
-export default class EventcategoryService{
+export default class EventCategoryService{
     getAllCategory = async (pageSize = 10, page = 0) =>{
         const repo = new EventCategoryRepository();
         const returnArray = await repo.getAllCategory(pageSize, page);
