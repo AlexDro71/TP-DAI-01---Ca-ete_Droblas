@@ -2,14 +2,14 @@ import express from "express";
 import EventsService from "../servicios/events-service.js";
 
 const router = express.Router();
-const EventsService = new EventsService();
+const eventsService = new EventsService();
 
 //Punto 2
 router.get("/", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
 
-  const getAllEvents =  EventsService.getAllEvents(pageSize, page);
+  const getAllEvents =  eventsService.getAllEvents(pageSize, page);
   return response.json(getAllEvents);
 
 });
@@ -23,7 +23,7 @@ router.get("/", (request, response) => {
   const startDate = request.query.startDate;
   const tag = request.query.tag;
   try {
-    const BusquedaEvent = EventsService.BusquedaEvento(
+    const BusquedaEvent = eventsService.BusquedaEvento(
       name,
       category,
       startDate,
@@ -41,7 +41,7 @@ router.get("/id", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const id = request.query.id;
-  const detalleEvento = EventsService.DetalleEvento(id);
+  const detalleEvento = eventsService.DetalleEvento(id);
   return response.json(DetalleEvento);
 });
 
@@ -56,7 +56,7 @@ router.get("/", (request, response) => {
   const attended = request.query.attended;
   const rating = request.query.rating;
   try {
-    const ListaUsuarios = EventsService.listaUsuarios(
+    const ListaUsuarios = eventsService.listaUsuarios(
       id,
       first,
       last,
@@ -75,7 +75,7 @@ router.get("/", (request, response) => {
 router.post("/", async (request, response) => {
   try {
       const eventData = request.body;
-      const nuevoEvent = await EventsService.crearEvent(eventData);
+      const nuevoEvent = await eventsService.crearEvent(eventData);
       response.status(201).json(nuevoEvent);
   } catch (error) {
       console.error("Error al crear el evento:", error);
@@ -88,7 +88,7 @@ router.put("/:id", async (request, response) => {
 
   try {
  
-      const existe = await EventsService.getEventById(id);
+      const existe = await eventsService.getEventById(id);
 
       if (!existe) {
           return response.status(404).json({ message: "Evento no encontrado" });
@@ -98,7 +98,7 @@ router.put("/:id", async (request, response) => {
           return response.status(403).json({ message: "Id creador evento != id actual" });
       }
 
-      const updatedEvent = await EventsService.putEvent(id, eventData);
+      const updatedEvent = await eventsService.putEvent(id, eventData);
       response.json(updatedEvent);
   } catch (error) {
       console.error("Error al editar el evento:", error);
@@ -110,14 +110,14 @@ router.delete("/:id", async (request, response) => {
 
   try {
       
-      const existe = await EventsService.getEventById(id);
+      const existe = await eventsService.getEventById(id);
       if (!existe) {
           return response.status(404).json({ message: "Evento no encontrado" });
       }
       if (existe.id_creator_user !== request.body.id_creator_user) {
           return response.status(403).json({ message: "Id creador evento != id actual" });
       }
-      await EventsService.borrarEvent(id);
+      await eventsService.borrarEvent(id);
       response.status(204).end();
   } catch (error) {
       console.error("Error al eliminar el evento:", error);
@@ -125,6 +125,31 @@ router.delete("/:id", async (request, response) => {
   }
 });
 
+//punto 9
+
+  router.post("/id", async (request, response) => {
+    try {
+        const {id_event, id_user} = request.body;
+        const nuevoEenrollment = await eventsService.crearEvent(id_event, id_user);
+        response.status(201).json(nuevoEvent);
+    } catch (error) {
+        console.error("Error al crear el evento:", error);
+        response.status(500).json({ message: "Error interno del servidor" });
+    }
+  });
+
+
+//punto 10
+router.patch("/id", async (request, reponse)=>{
+    try{
+      const {rating} = request.body;
+      const rate = await eventsService.rateEvent(rating)
+      response.status(200).json(rate)
+    }catch(error){
+      console.error("Error al crear el evento:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+    }
+})
 
 
 export default router;
