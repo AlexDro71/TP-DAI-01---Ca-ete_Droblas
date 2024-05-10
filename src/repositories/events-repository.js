@@ -13,10 +13,10 @@ export default class EventRepository{
         const pageSize = 10;
         const requestedPage = 0;
         //ir a base de datos...
-        query = `select *
-        from events 
+        const sql = `SELECT *
+        FROM events 
         limit '${(pagesize)}' offset '${(requestedPage)}'`;
-        const eventsInDB = query.execute();
+        const eventsInDB = sql.execute();
 
         return{
             collection: eventsInDB,

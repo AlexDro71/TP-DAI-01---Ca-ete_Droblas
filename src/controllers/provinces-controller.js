@@ -41,6 +41,21 @@ router.post("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
+  router.get("/:id/locations", async (request,response)=>{
+    try {
+      const { id } = request.params;
+      const locationsArray = await provinceService.getAllLocationsByProvinceId(id);
+      if (!locationsArray) {
+        return response
+          .status(404)
+          .json({ message: "Provincia no encontrada" });
+      }
+      response.json(locationsArray);
+    } catch (error) {
+      console.error("Error al obtener la provincia por ID:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+    }
+  })
   router.put("/:id", async (request, response) => {
     try {
       const { id } = request.params;

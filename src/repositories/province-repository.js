@@ -24,7 +24,7 @@ export default class ProvinceRepository{
         }
     }
 
-    async getAllProvinces(pageSize = 10, page = 0) {
+    async getAllProvinces(pageSize, page) {
         const offset = pageSize * page;
         const sql = `SELECT * FROM provinces
             ORDER BY id
@@ -48,6 +48,19 @@ export default class ProvinceRepository{
         }else{
             return console.error("Sad Papu :V");
         }
+    }
+
+    async getAllLocationsByProvinceId(id){
+        const sql = `SELECT L.name, L.latitude, L.longitude, P.name
+        FROM L.Locations INNER JOIN P.Provinces  ON id_province = '${id}'`
+        const { rows } = await this.DBClient.query(sql, [id]);
+        
+        if(result.rows.length > 0){
+            return rows[0];
+        }else{
+            return console.error("Sad Papu :V");
+        }
+
     }
 
     async putProvince(id, name, fullName, latitude, longitude) {

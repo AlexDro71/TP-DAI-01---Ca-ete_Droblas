@@ -17,9 +17,7 @@ router.post("/", async (request, response) => {
     router.get("/", async (request, response) => {
       try {
         const { pageSize, page } = request.query;
-  
-        pageSize = ValdacionesHelerp.EsUnInteger(pageSize, 0)
-        const categorias = await eventcategoryService.getAllCategory(pageSize, page);
+        const categorias = await eventcategoryService.getAllCategories(pageSize, page);
         response.json(categorias);
       } catch (error) {
         console.error("Error al obtener todas las categorias:", error);
