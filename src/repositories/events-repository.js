@@ -125,8 +125,7 @@ export default class EventRepository{
     async getEventById(eventId) {
     const sql = `
         SELECT * FROM events
-        WHERE id = $1
-    `;
+        WHERE id = $1`;
     const { rows } = await this.DBClient.query(sql, [eventId]);
     if(result.rows.length > 0){
         return rows[0];
@@ -155,6 +154,60 @@ export default class EventRepository{
         WHERE id = '${eventId}'
     `;
     await this.DBClient.query(sql, [eventId]);
+}
+
+//punto 9
+async registerUser(id_event, id_user){
+    const sql = `INSERT INTO enrollments (id_event, id_user)
+    VALUES ($1, $2)
+    RETURNING *`
+    const {rows} = await this.DBClient.query(sql, [id_event, id_user])
+    if(result.rows.length > 0){
+        return rows[0];
+    }else{
+        return console.error("Sad Papu :V");
+    }
+}
+async unregisterUser(id_event, id_user){
+
+        const sql = `
+            DELETE FROM event_enrollments
+            WHERE id_event = $1 and id_user = $2
+        `;
+        await this.DBClient.query(sql, [id_event, id_user]);
+        return true;
+}
+
+//Punto 10
+async ratingEvento(id_event, rating){
+    const inscripto = incripto(id_event)
+    if(!inscripto){
+        response.status(404).json({message: "El usuario no esta inscripto al evento"})
+    }else{
+        const sql = `UPDATE event_enrollments
+        SET rating = $1
+        RETURNING *`
+        const { rows } = await this.DBClient.query(sql, [rating]);
+        if(result.rows.length > 0){
+            return rows[0];
+        }else{
+            return console.error("Sad Papu :V");
+        }
+    }
+
+}
+
+async inscripto(id_event){
+    const id_user = req.user.id;
+    const sql = `SELECT * 
+    FROM event_enrollments ee
+    INNER JOIN events e ON e.'${id_event}'=ee.'${id_event}' 
+    INNER JOIN users u ON u'${id_user}'=ee.'${id_user}'`
+    if(await this.DBClient.query(sql)){
+        return true;
+    }else{
+        return false;
+    }
 }
 }
 

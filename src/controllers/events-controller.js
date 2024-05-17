@@ -1,5 +1,6 @@
 import express from "express";
 import EventsService from "../servicios/events-service.js";
+import { authMiddleware } from "../utils/auth-utils.js";
 
 const router = express.Router();
 const eventsService = new EventsService();
@@ -127,38 +128,55 @@ router.delete("/:id", async (request, response) => {
 
 //punto 9
 
-  router.post("/id", async (request, response) => {
+  router.post("/:id/enrollment", authMiddleware, async (request, response) => {
     try {
         const {id_event, id_user} = request.body;
-        const nuevoEenrollment = await eventsService.crearEvent(id_event, id_user);
-        response.status(201).json(nuevoEvent);
+        if(id_event == null){
+          response.status(404).json("Id no encontrado")
+        }
+        else if(!usuarioAutenticado){
+          response.status(401).json({message: "Usuario no autenticado"})
+        }else{
+        const nuevoEnrollment = await eventsService.registerUser(id_event, id_user);
+        response.status(201).json(nuevoEnrollment);
+        }
     } catch (error) {
         console.error("Error al crear el evento:", error);
         response.status(500).json({ message: "Error interno del servidor" });
     }
   });
 
+  router.delete("/:id/enrollment", authMiddleware, async (request, response )=> {
+    try{
+      const {id_event, id_user} = request.body;
+      const eliminado = unregisterUser(id_event, id_user)
+        if(!usuarioAutenticado){
+          response.status(401).json({message: "Usuario no autenticado"})
+        }else{
+          response.status(200).json(eliminado)
+        }
+    }catch(error){
+      console.error("Error al crear el evento:", error);
+      response.status(500).json({ message: "Error interno del servidor" });
+    }
+  })
+
 
 //punto 10
-router.patch("/:id/enrollment/:rating", async (request, response) => {
+router.patch("/:id/enrollment/:rating", authMiddleware, async (request, response) => {
   try {
       const { id, rating } = request.params;
       const event = await eventsService.getEventById(id);
       if (!event) {
-          return response.status(404).json({ message: "Evento no encontrado" });
+          response.status(404).json({ message: "Evento no encontrado" });
+      }else if (rating < 1 || rating > 10){
+        response.status(400).json({ message: "El rating debe estar entre 1 y 10" });
+      }else{
+        const rate = eventsService.ratingEvento(id, rating);
+        response.status(200).json(rate)
       }
-      if (!event.finalizado) {
-          return response.status(400).json({ message: "El evento aún no ha finalizado" });
-      }
-      const isUserRegistered = await eventsService.checkUserRegistration(id, request.user.id);
-      if (!isUserRegistered) {
-          return response.status(400).json({ message: "El usuario no está registrado en el evento" });
-      }
-      if (rating < 1 || rating > 10) {
-          return response.status(400).json({ message: "El rating debe estar entre 1 y 10" });
-      }
-      await eventsService.saveRating(id, request.user.id, rating, request.body.feedback);
-      response.status(200).json({ message: "Rating registrado exitosamente" });
+      
+     
   } catch (error) {
       console.error("Error al registrar el rating del evento:", error);
       response.status(500).json({ message: "Error interno del servidor" });

@@ -5,9 +5,9 @@ export default class EventCategoryService{
         const returnArray = await repo.getAllCategory(pageSize, page);
         return returnArray;
     }
-    getProvinceById = async (id) =>{
+    getCategoryById = async (id) =>{
         const repo = new EventCategoryRepository();
-        const returnArray = await repo.getCategoriaById(id);
+        const returnArray = await repo.getCategoryById(id);
         return returnArray;
     }
     crearCategory = async (name, display_order) => {
