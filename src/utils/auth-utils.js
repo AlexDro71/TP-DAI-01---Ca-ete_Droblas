@@ -2,9 +2,9 @@ import express from 'express'
 import cors from 'cors'
 
 
-            function desencriptarToken(token){
+            function desencriptarToken(vtoken){
             const secretKey = "UmDoisTreisTriesDoisUmoTodoMundoSobreDoisRaizEmCadaUno";
-            let token = token;
+            let token = vtoken;
             let payloadOriginal = null;
             try{
                 payloadOriginal =  jwt.verify(token, secretKey);

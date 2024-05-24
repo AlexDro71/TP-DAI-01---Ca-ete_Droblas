@@ -1,4 +1,4 @@
-import EventRepository from './../../src/repositories/events-repository';  
+import EventRepository from './../../src/repositories/events-repository.js';  
 
 export default class EventsService{
     getAllEvents = async () =>{
@@ -57,9 +57,9 @@ export default class EventsService{
         return returnArray;
     }
 
-            desencriptarToken = async (token) =>{
+            desencriptarToken = async (vtoken) =>{
             const secretKey = 'UmDoisTreisTriesDoisUmoTodoMundoSobreDoisRaizEmCadaUno';
-            let token = token;
+            let token = vtoken;
             let payloadOriginal = null;
             try{
                 payloadOriginal = await jwt.verify(token, secretKey);

@@ -1,8 +1,5 @@
 import pg from "pg";
-import { DBconfig } from "../db.js";
-
-const client = new pg.Client(DBconfig);
-Client.connect();
+import { DBconfig } from "../../database/DB.js";
 
 export default class UsersRepository{
     constructor () {

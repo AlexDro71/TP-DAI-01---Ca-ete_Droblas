@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import UsersRepository from './../../src/repositories/users-repository';  
+import UsersRepository from './../../src/repositories/users-repository.js';  
 
 export default class UsersService {
     crearUsuario = async (first_name, last_name, username, password) => {
@@ -35,7 +35,7 @@ export default class UsersService {
         }
     validarMail = async(email) => {
         regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-        if(regex.test(mail)){
+        if(regex.test(email)){
             return true;
         }else{
             return false;

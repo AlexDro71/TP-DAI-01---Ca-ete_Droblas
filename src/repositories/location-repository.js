@@ -1,5 +1,5 @@
 import pg from "pg";
-import { DBconfig } from "../db.js";
+import { DBconfig } from "../../database/DB.js";
 
 
 export default class LocationRepository{

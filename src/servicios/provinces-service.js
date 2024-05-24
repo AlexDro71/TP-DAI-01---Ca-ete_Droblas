@@ -2,7 +2,6 @@ import ProvinceRepository from './../../src/repositories/province-repository.js'
 
 export default class ProvinceService{
 
-
     getAllProvinces = async (pageSize = 10, page = 0) =>{
         const repo = new ProvinceRepository();
         const returnArray = await repo.getAllProvinces(pageSize, page);
