@@ -18,7 +18,7 @@ app.use("/api/location", locationController);
 app.use("/api/event-location", eventlocationController);
 app.use("/api/event-category", eventcategoryController);
 app.use(unknownEndpoint);
-const port = 3508;
+const port = 5432;
 
 app.listen(port, () => { 
     // Inicio el servidor WEB (escuchar)  
