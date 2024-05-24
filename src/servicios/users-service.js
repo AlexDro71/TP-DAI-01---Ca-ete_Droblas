@@ -33,6 +33,15 @@ export default class UsersService {
         const token = jwt.sign(payload, secretKey, options)
         return token;
         }
+    validarMail = async(email) => {
+        regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        if(regex.test(mail)){
+            return true;
+        }else{
+            return false;
+        }
+    
+    }
         
 
 

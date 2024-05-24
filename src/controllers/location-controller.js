@@ -1,5 +1,6 @@
 import express from "express";
 import LocationService from "./../servicios/location-service.js";
+import { authMiddleware } from "../utils/auth-utils.js";
 const locationService = new LocationService();
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get("/:id", async (request, response) => {
       if (!location) {
         return response
           .status(404)
-          .json({ message: "id_localidad no encontrado" });
+          .json({ message: "location no encontrado" });
       }
       response.status(200).json(locations);
     } catch (error) {
@@ -29,14 +30,14 @@ router.get("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
-  router.get("/:id/event-location", async (request, response)=> {
+  router.get("/:id/event-location", authMiddleware, async (request, response)=> {
     try{
         const { id } = resquest.params;
         const eventLocation = await locationService.getAllEventLocationById(id);
         if(!eventLocation){
             return response
             .status(404)
-            .json({menssage: "localidad no encontrada"});
+            .json({menssage: "location no encontrada"});
         }
         response.status(200).json(locations)
     }catch (error) {

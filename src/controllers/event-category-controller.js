@@ -7,8 +7,12 @@ const router = express.Router();
 router.post("/", async (request, response) => {
     try {
       const {name, display_order} = request.body;
+      if(name.length<3 || name==""){
+        return response.status(400).json({message: "El nombre tiene menos de 3 letras"})
+      }else{
       const newCategory = await eventcategoryService.crearCategory(name, display_order);
       response.status(201).json(newCategory);
+      }
     } catch (error) {
       console.error("Error al crear la categoria:", error);
       response.status(500).json({ message: "Error interno del servidor" });
@@ -18,7 +22,7 @@ router.post("/", async (request, response) => {
       try {
         const { pageSize, page } = request.query;
         const categorias = await eventcategoryService.getAllCategories(pageSize, page);
-        response.json(categorias);
+        return response.status(200).json(categorias);
       } catch (error) {
         console.error("Error al obtener todas las categorias:", error);
         response.status(500).json({ message: "Error interno del servidor" });
@@ -43,12 +47,16 @@ router.post("/", async (request, response) => {
       try {
         const { id } = request.params;
         const { name, display_order } = request.body;
+        if(name.length<3 || name==""){
+          return response.status(400).json({message: "El nombre tiene menos de 3 letras"})
+        }else{
         const updatedCategory = await eventcategoryService.putCategory(
           id,
           name, 
           display_order
         );
-        response.json(updatedCategory);
+        response.status(200).json(updatedCategory);
+      }
       } catch (error) {
         console.error("Error al editar la categoria:", error);
         response.status(500).json({ message: "Error interno del servidor" });
@@ -57,8 +65,12 @@ router.post("/", async (request, response) => {
     router.delete("/:id", async (request, response) => {
       try {
         const { id } = request.params;
+        if(id==null){
+          return response.status(400).json({message: "ID no encontrado"})
+        }else{
         await eventcategoryService.borrarCategory(id);
-        response.status(204).end();
+        response.status(200).end();
+      }
       } catch (error) {
         console.error("Error al eliminar la provincia:", error);
         response.status(500).json({ message: "Error interno del servidor" });

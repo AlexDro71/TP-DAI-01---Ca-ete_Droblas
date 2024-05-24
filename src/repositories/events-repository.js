@@ -89,19 +89,19 @@ export default class EventRepository{
         JOIN events E on E.id = ER.id_event
         WHERE E.id = '${id}' 
         limit '${(pagesize)}' offset '${(requestedPage)}'`
-        if(first != null){
+        if(first !== null){
             queryAgregado += `AND E.first_name = '${categorias.first}'`
         }
-        if(last != null){
+        if(last !== null){
             queryAgregado += `AND U.last_name = '${categorias.last}'`
         }
-        if(username != null){
+        if(username !== null){
             queryAgregado += `AND U.username = '${categorias.username}'`
         }
-        if(attended != null){
+        if(attended !== null){
             queryAgregado += `AND ER.attended = '${categorias.attended}'`
         }
-        if(rating != null){
+        if(rating !== null){
             queryAgregado += `AND ER.rating = '${categorias.rating}'`
         }
     }
