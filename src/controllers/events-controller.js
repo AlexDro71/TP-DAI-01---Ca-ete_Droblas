@@ -29,7 +29,7 @@ router.get("/", (request, response) => {
       startDate,
       tag
     );
-    return response.json(BusquedaEvent);
+    return response.status(200).send(BusquedaEvent);
   } catch (error) {
     console.log("Un eror Papu :V");
     return response.json("La hora sad :'v");

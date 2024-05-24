@@ -17,7 +17,7 @@ app.use("/api/provinces", provinceController);
 app.use("/api/location", locationController);
 //app.use("/api/event-location", eventlocationController);
 app.use("/api/event-category", eventcategoryController);
-const port = 5432;
+const port = 3508;
 
 app.listen(port, () => { 
     // Inicio el servidor WEB (escuchar)  

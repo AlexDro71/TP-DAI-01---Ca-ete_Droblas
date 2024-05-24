@@ -57,7 +57,7 @@ export default class EventRepository{
         if(tag != null && sql.includes("WHERE")){
             queryAgregado += `AND t.name = '${categorias.tag}'`
         }
-
+        return sql;
     }
     //Punto 4
     async DetalleEvento(id){
