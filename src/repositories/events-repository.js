@@ -2,46 +2,53 @@ import pg from "pg";
 import { DBconfig } from "../../database/DB.js";
 
 
+
 export default class EventRepository{
     constructor () {
         const {Client} = pg;
         this.DBClient = new Client(DBconfig);
+        console.log(DBconfig)
         this.DBClient.connect();
+        
     }
    
-    async BusquedaEvento(name, category, startDate, tag, page, pageSize){//punto 3
-         var categorias = [name, category, startDate, tag]
-        var queryAgregado = "";
-        for(var i = 0; i < categorias.length; i++){
-            if(categorias[i] == null){
-                categorias.pop(i)
-            }
-        }
-        const sql = `SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, t.name, u.id, u.username, u.first_name, u.last_name,ec.id, ec.name, el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity  
-        FROM event e    
-        JOIN users u ON e.id_creator_user = u.id
-        JOIN event_categories ec ON e.id_event_category = ec.id
-        JOIN event_tags et ON e.id = et.id_event
-        JOIN tags t ON et.id_tag = t.id
-        JOIN event_location el ON e.id_envet_location = el.id 
-        WHERE 1=1`
-        + queryAgregado + 
-        ` limit '${page}' offset '${pageSize}'`
+    async BusquedaEvento(name, category, startDate, tag, page, pageSize) {
+        // Convertir page y pageSize a enteros
+        const intPage = parseInt(page);
+        const intPageSize = parseInt(pageSize)
 
-        if(name != null && sql.includes("WHERE")){
-            queryAgregado += `AND e.name = '${categorias.name}'`
+        console.log(page, pageSize)
+        let queryAgregado=``
+        if(name != null){
+            queryAgregado += `AND e.name = "${name}"`
         }
-        if(startDate != null && sql.includes("WHERE")){
-            queryAgregado += `AND e.start_date = '${categorias.startDate}'`
+        if(startDate != null){
+            queryAgregado += `AND e.start_date = "${startDate}"`
         }
-        if(category != null && sql.includes("WHERE")){
-            queryAgregado += `AND ec.name = '${categorias.category}'`
+        if(category != null){
+            queryAgregado += `AND ec.name = "${category}"`
         }
-        if(tag != null && sql.includes("WHERE")){
-            queryAgregado += `AND t.name = '${categorias.tag}'`
+        if(tag != null){
+            queryAgregado += `AND t.name = "${tag}"`
         }
-        return sql;
+
+        const sql = `
+            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity  
+            FROM events e    
+            JOIN users u ON e.id_creator_user = u.id
+            JOIN event_categories ec ON e.id_event_category = ec.id
+            JOIN event_tags et ON e.id = et.id_event
+            JOIN tags t ON et.id_tag = t.id
+            JOIN event_locations el ON e.id_event_location = el.id 
+            WHERE 1=1 `
+            +queryAgregado+
+            ` LIMIT ${intPage} OFFSET ${intPageSize}`;
+            console.log(sql)
+        const response = await this.DBClient.query(sql);
+        return response.rows;
     }
+    
+    
     //Punto 4
     async DetalleEvento(id){
           const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, U.id, U.username, U.first_name, U.,last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
@@ -53,8 +60,9 @@ export default class EventRepository{
           JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
           JOIN tags T on ET.id_tag = T.id
           WHERE E.id = '${id}' 
-          limit '${(pagesize)}' offset '${(requestedPage)}'`; 
-          return sql;
+          limit '${(pagesize)}' offset '${(requestedPage)}'`;
+          const responsa = await this.client.query(sql); 
+          return responsa;
     }
     //Punto 5
     async listaUsuarios(id, first, last, username, attended, rating){
@@ -87,6 +95,8 @@ export default class EventRepository{
         if(rating !== null){
             queryAgregado += `AND ER.rating = '${categorias.rating}'`
         }
+        const responsa = await this.client.query(sql); 
+        return responsa;
     }
    
 

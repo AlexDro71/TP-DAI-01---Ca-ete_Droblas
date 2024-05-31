@@ -3,16 +3,16 @@ import EventRepository from './../../src/repositories/events-repository.js';
 export default class EventsService{
 
     BusquedaEvento = async (name, category, startDate, tag, page, pageSize) =>{
-        let offset = 0;
-        const repo = new EventRepository();
-        const returnArray = await repo.BusquedaEvento(name, category, startDate, tag);
-        return{
-            collection: returnArray,
-            pageSize: pageSize,
-            page: page,
-            nextPage: `http://localhost/3508/events?limit'${pageSize}'&offset='${offset+=pageSize}'`,
-        }
-    }
+    const repo = new EventRepository();
+    const returnArray = await repo.BusquedaEvento(name, category, startDate, tag, page, pageSize);
+    return {
+        collection: returnArray,
+        pageSize: pageSize,
+        page: page,
+        nextPage: `http://localhost/3508/events?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
+    };
+}
+
     DetalleEvento = async (id) =>{
         const repo = new EventRepository();
         const returnArray = await repo.DetalleEvento(id);

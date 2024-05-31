@@ -8,26 +8,29 @@ const eventsService = new EventsService();
 // punto 2 y 3
 router.get("/", async (request, response) => {
   console.log("1")
-  const pageSize = request.query.pageSize;
-  const page = request.query.page;
+  const pageSize = request.query.offset;
+  const page = request.query.limit;
   const name = request.query.name;
   const category = request.query.category;
   const startDate = request.query.startDate;
   const tag = request.query.tag;
   try {
-    const BusquedaEvent = await eventsService.BusquedaEvento(
-      name,
-      category,
-      startDate,
-      tag
-    );
-    console.log(BusquedaEvent)
-    return response.status(200).send(BusquedaEvent);
+      const BusquedaEvent = await eventsService.BusquedaEvento(
+          name,
+          category,
+          startDate,
+          tag,
+          page,
+          pageSize
+      );
+      console.log(BusquedaEvent)
+      return response.status(200).send(BusquedaEvent);
   } catch (error) {
-    console.log("Un eror Papu :V");
-    return response.json("La hora sad :'v");
+      console.log(error);
+      return response.json("La hora sad :'v");
   }
 });
+
 
 //punto 4
 router.get("/:id", (request, response) => {
