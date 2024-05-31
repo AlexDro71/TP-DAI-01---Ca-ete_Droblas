@@ -8,25 +8,8 @@ export default class EventRepository{
         this.DBClient = new Client(DBconfig);
         this.DBClient.connect();
     }
-  
-    async getAllEvents(){//punto 2
-        const pageSize = 10;
-        const requestedPage = 0;
-        //ir a base de datos...
-        const sql = `SELECT *
-        FROM events 
-        limit '${(pagesize)}' offset '${(requestedPage)}'`;
-        const eventsInDB = sql.execute();
-
-        return{
-            collection: eventsInDB,
-            pageSize: pageSize,
-            page: requestedPage,
-            nextPage: requestedPage + 1,
-        }
-        
-    }
-    async BusquedaEvento(name, category, startDate, tag){//punto 3
+   
+    async BusquedaEvento(name, category, startDate, tag, page, pageSize){//punto 3
          var categorias = [name, category, startDate, tag]
         var queryAgregado = "";
         for(var i = 0; i < categorias.length; i++){

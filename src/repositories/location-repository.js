@@ -16,12 +16,7 @@ export default class LocationRepository{
    
         const locationsInDB = sql.execute();
 
-        return{
-            collection: locationsInDB,
-            pageSize: pageSize,
-            page: requestedPage,
-            nextPage: requestedPage + 1,
-        }
+        return sql;
     }
 
     async getLocationById(id){

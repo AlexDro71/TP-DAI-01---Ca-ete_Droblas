@@ -5,16 +5,7 @@ import { authMiddleware } from "../utils/auth-utils.js";
 const router = express.Router();
 const eventsService = new EventsService();
 
-//Punto 2
-router.get("/", (request, response) => {
-  const pageSize = request.query.pageSize;
-  const page = request.query.page;
-
-  const getAllEvents = eventsService.getAllEvents(pageSize, page);
-  return response.json(getAllEvents);
-});
-
-// punto 3
+// punto 2 y 3
 router.get("/", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
@@ -37,7 +28,7 @@ router.get("/", (request, response) => {
 });
 
 //punto 4
-router.get("/id", (request, response) => {
+router.get("/:id", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const id = request.query.id;
@@ -50,7 +41,7 @@ router.get("/id", (request, response) => {
 });
 
 //punto 5
-router.get("/", (request, response) => {
+router.get("/:id/enrollment", (request, response) => {
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const id = request.query.id;
