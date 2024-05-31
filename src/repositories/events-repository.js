@@ -33,7 +33,22 @@ export default class EventRepository{
         }
 
         const sql = `
-            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity  
+            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity,
+            json_build_object(
+                'id', el.id,
+                'name', el.name,
+                'full_address', el.full_address,
+                'latitude', el.latitude,
+                'longitude', el.longitude,
+                'max_capacity', el.max_capacity
+            ) AS event_location,
+            array(
+                SELECT json_build_object(
+                    'id', tags.id,
+                    'name', tags.name
+                )
+                FROM tags
+            ) AS tags  
             FROM events e    
             JOIN users u ON e.id_creator_user = u.id
             JOIN event_categories ec ON e.id_event_category = ec.id
@@ -43,6 +58,7 @@ export default class EventRepository{
             WHERE 1=1 `
             +queryAgregado+
             ` LIMIT ${intPage} OFFSET ${intPageSize}`;
+            const g = ` GROUP BY 1,2,3,4,5,6, el.id`
             console.log(sql)
         const response = await this.DBClient.query(sql);
         return response.rows;
