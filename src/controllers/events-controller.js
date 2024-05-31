@@ -6,7 +6,8 @@ const router = express.Router();
 const eventsService = new EventsService();
 
 // punto 2 y 3
-router.get("/", (request, response) => {
+router.get("/", async (request, response) => {
+  console.log("1")
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const name = request.query.name;
@@ -14,12 +15,13 @@ router.get("/", (request, response) => {
   const startDate = request.query.startDate;
   const tag = request.query.tag;
   try {
-    const BusquedaEvent = eventsService.BusquedaEvento(
+    const BusquedaEvent = await eventsService.BusquedaEvento(
       name,
       category,
       startDate,
       tag
     );
+    console.log(BusquedaEvent)
     return response.status(200).send(BusquedaEvent);
   } catch (error) {
     console.log("Un eror Papu :V");
@@ -42,6 +44,7 @@ router.get("/:id", (request, response) => {
 
 //punto 5
 router.get("/:id/enrollment", (request, response) => {
+  console.log("3")
   const pageSize = request.query.pageSize;
   const page = request.query.page;
   const id = request.query.id;
@@ -68,6 +71,7 @@ router.get("/:id/enrollment", (request, response) => {
 
 //punto 8
 router.post("/", authMiddleware, async (request, response) => {
+  console.log("4")
   try {
     const eventData = request.body;
     if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
@@ -82,6 +86,7 @@ router.post("/", authMiddleware, async (request, response) => {
   }
 });
 router.put("/:id", authMiddleware, async (request, response) => {
+  console.log("5")
   const { id } = request.params;
   const eventData = request.body;
   if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
@@ -108,6 +113,7 @@ router.put("/:id", authMiddleware, async (request, response) => {
   }
 });
 router.delete("/:id", authMiddleware, async (request, response) => {
+  console.log("6")
   const { id } = request.params;
 
   try {
@@ -131,6 +137,7 @@ router.delete("/:id", authMiddleware, async (request, response) => {
 //punto 9
 
 router.post("/:id/enrollment", authMiddleware, async (request, response) => {
+  console.log("7")
   try {
     const { id_event, id_user } = request.body;
     if (id_event == null) {
@@ -151,6 +158,7 @@ router.post("/:id/enrollment", authMiddleware, async (request, response) => {
 });
 
 router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
+  console.log("8")
   try {
     const { id_event, id_user } = request.body;
     if (eventsService.estadoRegistro(id_user), eventsService.datePast()) {
@@ -169,6 +177,7 @@ router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
 
 //punto 10
 router.patch("/:id/enrollment/:rating", authMiddleware, async (request, response) => {
+  console.log("10")
     try {
       const { id, rating } = request.params;
       const event = await eventsService.getEventById(id);

@@ -14,9 +14,9 @@ export default class LocationRepository{
         FROM locations 
         limit '${(pagesize)}' offset '${(requestedPage)}'`;
    
-        const locationsInDB = sql.execute();
+        return sql.execute();
 
-        return sql;
+        
     }
 
     async getLocationById(id){

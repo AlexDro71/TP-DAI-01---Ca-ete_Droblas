@@ -8,7 +8,7 @@ import locationController from "./src/controllers/location-controller.js"
 import eventcategoryController from "./src/controllers/event-category-controller.js"
 
 const app=express();
-app.use(cors);
+//app.use(cors);
 app.use(express.json());
 app.use('/front', express.static('public'));
 app.use("/api/users", usersController);

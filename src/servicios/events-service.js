@@ -5,8 +5,8 @@ export default class EventsService{
     BusquedaEvento = async (name, category, startDate, tag, page, pageSize) =>{
         let offset = 0;
         const repo = new EventRepository();
-        const returnArray = await repo. BusquedaEvento(name, category, startDate, tag);
-              return{
+        const returnArray = await repo.BusquedaEvento(name, category, startDate, tag);
+        return{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
