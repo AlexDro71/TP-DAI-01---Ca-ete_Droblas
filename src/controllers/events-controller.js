@@ -34,8 +34,9 @@ router.get("/", async (request, response) => {
 
 //punto 4
 router.get("/:id", (request, response) => {
-  const pageSize = request.query.pageSize;
-  const page = request.query.page;
+  console.log("2")
+  const pageSize = request.query.offset;
+  const page = request.query.limit;
   const id = request.query.id;
   const detalleEvento = eventsService.DetalleEvento(id);
   if(detalleEvento == null){
