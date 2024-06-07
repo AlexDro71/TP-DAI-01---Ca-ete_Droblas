@@ -33,7 +33,9 @@ export default class EventRepository{
         }
 
         const sql = `
-            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity,
+            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, 
+            t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, /* el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity,
+            l.id, l.name, l.longitude, l.latitude, p.id, p.ma,e, p.full_name, p.latitude, p.longitude */ 
             json_build_object(
                 'id', el.id,
                 'name', el.name,
@@ -42,6 +44,20 @@ export default class EventRepository{
                 'longitude', el.longitude,
                 'max_capacity', el.max_capacity
             ) AS event_location,
+            json_build_object(
+                'id', l.id,
+                'name', l.name,
+                'latitude', l.latitude,
+                'longitude', l.longitude
+            ) AS location,
+            json_build_object(
+                'id', p.id,
+                'name', p.name,
+                'full_name', p.full_name,
+                'latitude', p.latitude,
+                'longitude', p.longitude,
+                'display_order', p.display_order
+            ) AS province,
             array(
                 SELECT json_build_object(
                     'id', tags.id,
@@ -55,10 +71,11 @@ export default class EventRepository{
             JOIN event_tags et ON e.id = et.id_event
             JOIN tags t ON et.id_tag = t.id
             JOIN event_locations el ON e.id_event_location = el.id 
+            JOIN locations l ON el.id_location = l.id
+        JOIN provinces p ON l.id_province = p.id
             WHERE 1=1 `
             +queryAgregado+
             ` LIMIT ${intPage} OFFSET ${intPageSize}`;
-            const g = ` GROUP BY 1,2,3,4,5,6, el.id`
             console.log(sql)
         const response = await this.DBClient.query(sql);
         return response.rows;
@@ -67,7 +84,37 @@ export default class EventRepository{
     
     //Punto 4
     async DetalleEvento(id){
-          const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance, U.id, U.username, U.first_name, U.,last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
+          const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance,
+           U.id, U.username, U.first_name, U.last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
+           json_build_object(
+            'id', el.id,
+            'name', el.name,
+            'full_address', el.full_address,
+            'latitude', el.latitude,
+            'longitude', el.longitude,
+            'max_capacity', el.max_capacity
+        ) AS event_location,
+        json_build_object(
+            'id', l.id,
+            'name', l.name,
+            'latitude', l.latitude,
+            'longitude', l.longitude
+        ) AS location,
+        json_build_object(
+            'id', p.id,
+            'name', p.name,
+            'full_name', p.full_name,
+            'latitude', p.latitude,
+            'longitude', p.longitude,
+            'display_order', p.display_order
+        ) AS province,
+        array(
+            SELECT json_build_object(
+                'id', tags.id,
+                'name', tags.name
+            )
+            FROM tags
+        ) AS tags  
           FROM events E 
           JOIN users U on E.id_creator_user = U.id 
           JOIN event_categories EC on E.id_event_category = EC.id 
@@ -75,43 +122,46 @@ export default class EventRepository{
           JOIN locations L on EL.id_location = L.id 
           JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
           JOIN tags T on ET.id_tag = T.id
-          WHERE E.id = '${id}' 
-          limit '${(pagesize)}' offset '${(requestedPage)}'`;
-          const responsa = await this.client.query(sql); 
-          return responsa;
+          WHERE E.id = '${id}'`;
+          console.log(sql)
+          const response = await this.client.query(sql); 
+          return response.rows;
     }
     //Punto 5
     async listaUsuarios(id, first, last, username, attended, rating){
-        var categorias = [first, last, username, attended, rating];
-        var queryAgregado = "";
-        for(var i = 0; i < categorias.length; i++){
-            if(categorias[i] == null){
-                categorias.pop(i)
-            }
+        let queryAgregado=``
+        if(first != null){
+            queryAgregado += `AND E.first_name = "${first}"`
         }
-        const sql = `SELECT U.first_name, U.last_name, U.username,
-        ER.description, ER.attended, ER.rating
+        if(last != null){
+            queryAgregado += `AND U.last_name = "${last}"`
+        }
+        if(username != null){
+            queryAgregado += `AND U.username = "${username}"`
+        }
+        if(attended != null){
+            queryAgregado += `AND ER.attended = "${attended}"`
+        }
+        if(rating != null){
+            queryAgregado += `AND ER.rating = "${rating}"`
+        }
+
+        
+        const sql = `SELECT ER.id, ER.id_event, ER.id_user, ER.description, ER.attended, ER.rating
+        json_build_object(
+            'id', U.id,
+            'first_name', U.first_name,
+            'last_name', U.last_name,
+            'username', U.username,
+            'longitude', el.longitude,
+            'max_capacity', el.max_capacity
+        ) AS user,
         FROM users U 
         JOIN event_enrollments ER on ER.id_user = U.id 
         JOIN events E on E.id = ER.id_event
-        WHERE E.id = '${id}' 
-        limit '${(pagesize)}' offset '${(requestedPage)}'`
-        if(first !== null){
-            queryAgregado += `AND E.first_name = '${categorias.first}'`
-        }
-        if(last !== null){
-            queryAgregado += `AND U.last_name = '${categorias.last}'`
-        }
-        if(username !== null){
-            queryAgregado += `AND U.username = '${categorias.username}'`
-        }
-        if(attended !== null){
-            queryAgregado += `AND ER.attended = '${categorias.attended}'`
-        }
-        if(rating !== null){
-            queryAgregado += `AND ER.rating = '${categorias.rating}'`
-        }
-        const responsa = await this.client.query(sql); 
+        WHERE E.id = '${id}'`
+        console.log(sql);
+        const responsa = await this.client.query(sql);
         return responsa;
     }
    
