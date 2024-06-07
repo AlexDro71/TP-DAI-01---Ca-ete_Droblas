@@ -11,7 +11,7 @@ export default class EventsService{
         page: page,
         nextPage: `http://localhost/3508/events?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
     };
-}
+    }
 
     DetalleEvento = async (id) =>{
         const repo = new EventRepository();

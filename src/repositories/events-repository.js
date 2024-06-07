@@ -84,47 +84,51 @@ export default class EventRepository{
     
     //Punto 4
     async DetalleEvento(id){
+        console.log(id)
           const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance,
-           U.id, U.username, U.first_name, U.last_name, EC.id, EC.name, EL.id, EL.name, EL.full_address, EL.latitude, EL.longitude, EL.max_capacity, P.name, T.name 
-           json_build_object(
-            'id', el.id,
-            'name', el.name,
-            'full_address', el.full_address,
-            'latitude', el.latitude,
-            'longitude', el.longitude,
-            'max_capacity', el.max_capacity
-        ) AS event_location,
-        json_build_object(
-            'id', l.id,
-            'name', l.name,
-            'latitude', l.latitude,
-            'longitude', l.longitude
-        ) AS location,
-        json_build_object(
-            'id', p.id,
-            'name', p.name,
-            'full_name', p.full_name,
-            'latitude', p.latitude,
-            'longitude', p.longitude,
-            'display_order', p.display_order
-        ) AS province,
-        array(
-            SELECT json_build_object(
-                'id', tags.id,
-                'name', tags.name
-            )
-            FROM tags
-        ) AS tags  
-          FROM events E 
-          JOIN users U on E.id_creator_user = U.id 
-          JOIN event_categories EC on E.id_event_category = EC.id 
-          JOIN event_locations EL on E.id_event_location = EL.id 
-          JOIN locations L on EL.id_location = L.id 
-          JOIN provinces P on L.id_province = P.id JOIN event_tags ET on E.id = ET.id_event 
-          JOIN tags T on ET.id_tag = T.id
-          WHERE E.id = '${id}'`;
-          console.log(sql)
-          const response = await this.client.query(sql); 
+          U.id AS user_id, U.username, U.first_name, U.last_name, 
+          json_build_object(
+              'id', EL.id,
+              'name', EL.name,
+              'full_address', EL.full_address,
+              'latitude', EL.latitude,
+              'longitude', EL.longitude,
+              'max_capacity', EL.max_capacity
+          ) AS event_location,
+          json_build_object(
+              'id', L.id,
+              'name', L.name,
+              'latitude', L.latitude,
+              'longitude', L.longitude
+          ) AS location,
+          json_build_object(
+              'id', P.id,
+              'name', P.name,
+              'full_name', P.full_name,
+              'latitude', P.latitude,
+              'longitude', P.longitude,
+              'display_order', P.display_order
+          ) AS province,
+          (
+              SELECT json_agg(
+                  json_build_object(
+                      'id', tags.id,
+                      'name', tags.name
+                  )
+              )
+              FROM tags
+              JOIN event_tags ET ON tags.id = ET.id_tag
+              WHERE ET.id_event = E.id
+          ) AS tags
+      FROM events E 
+      JOIN users U ON E.id_creator_user = U.id 
+      JOIN event_categories EC ON E.id_event_category = EC.id 
+      JOIN event_locations EL ON E.id_event_location = EL.id 
+      JOIN locations L ON EL.id_location = L.id 
+      JOIN provinces P ON L.id_province = P.id 
+      WHERE E.id = '${id}'`;
+        console.log(sql)
+          const response = await this.DBClient.query(sql); 
           return response.rows;
     }
     //Punto 5
@@ -161,7 +165,7 @@ export default class EventRepository{
         JOIN events E on E.id = ER.id_event
         WHERE E.id = '${id}'`
         console.log(sql);
-        const responsa = await this.client.query(sql);
+        const response = await this.DBClient.query(sql); 
         return responsa;
     }
    

@@ -33,25 +33,28 @@ router.get("/", async (request, response) => {
 
 
 //punto 4
-router.get("/:id", (request, response) => {
-  console.log("2")
-  const pageSize = request.query.offset;
-  const page = request.query.limit;
-  const id = request.query.id;
-  const detalleEvento = eventsService.DetalleEvento(id);
-  if(detalleEvento == null){
-    return response.status(404).json({ message: "No se encontro evento de dicho ID" });
-  }else{
-  return response.status(200).json(DetalleEvento);
+router.get("/:id", async (request, response) => {
+  try {
+    console.log("5");
+    const id = request.params.id;
+    console.log(id);
+    const detalleEvento = await eventsService.DetalleEvento(id);
+    if (detalleEvento == null) {
+      return response.status(404).json({ message: "No se encontró evento con dicho ID" });
+    } else {
+      return response.status(200).json(detalleEvento);
+    }
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ message: "Hubo un error al procesar la solicitud" });
   }
 });
 
 //punto 5
 router.get("/:id/enrollment", (request, response) => {
   console.log("3")
-  const pageSize = request.query.pageSize;
-  const page = request.query.page;
   const id = request.query.id;
+  console.log(id)
   const first = request.query.first_name;
   const last = request.query.last_name;
   const user = request.query.username;
