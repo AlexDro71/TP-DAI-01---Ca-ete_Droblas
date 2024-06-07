@@ -7,12 +7,17 @@ export default class ProvinceService{
         const returnArray = await repo.getAllProvinces(pageSize, page);
         return returnArray;
     }
-
     getProvinceById = async (id) =>{
         const repo = new ProvinceRepository();
         const returnArray = await repo.getProvinceById(id);
         return returnArray;
     }
+    getAllLocationsByProvinceId = async (id, pageSize, page) =>{
+        const repo = new ProvinceRepository();
+        const returnArray = await repo.getAllLocationsByProvinceId(id, pageSize, page);
+        return returnArray;
+    }
+
     crearProvince = async (name, fullName, latitude, longitude) => {
         const repo = new ProvinceRepository();
         const returnArray = await repo.crearProvince(name, fullName, latitude, longitude);

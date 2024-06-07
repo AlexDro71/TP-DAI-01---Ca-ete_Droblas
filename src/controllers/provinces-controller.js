@@ -6,9 +6,16 @@ const router = express.Router();
 //Punto 7
 router.post("/", async (request, response) => {
   try {
-    const {name, fullName, latitude, longitude} = request.body;
-    if(name.length<3 || tyoeof(latitude) != 'number' || typeof(longitude) != 'number' ){
-      return response.status(400).json({message: "El nombre es muy corto o hay datos de tipo incorrectos"})
+    const name = request.query.name;
+    console.log(name)
+    const fullName = request.query.full_name;
+    const latitude = request.query.latitude;
+    console.log(latitude)
+    const longitude = request.query.longitude;
+    console.log(longitude)
+
+    if (name.length < 3 || latitude != 'number' || longitude != 'number') {
+      return response.status(400).json({ message: "El nombre es muy corto o hay datos de tipo incorrectos" });
     }else{
     const newProvince = await provinceService.crearProvince(name, fullName, latitude, longitude);
     response.status(201).json(newProvince);
@@ -16,12 +23,12 @@ router.post("/", async (request, response) => {
   } catch (error) {
     console.error("Error al crear la provincia:", error);
     response.status(500).json({ message: "Error interno del servidor" });
-  }
-  
+  }});
+
   router.get("/", async (request, response) => {
     try {
-      const { pageSize, page } = request.query;
-      pageSize = ValdacionesHelerp.EsUnInteger(pageSize, 0)
+      const pageSize = request.query.offset;
+      const page = request.query.limit;
       const provinces = await provinceService.getAllProvinces(pageSize, page);
       response.json(provinces);
     } catch (error) {
@@ -29,9 +36,11 @@ router.post("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
+
   router.get("/:id", async (request, response) => {
     try {
-      const { id } = request.params;
+    
+      const id = request.params.id;
       const province = await provinceService.getProvinceById(id);
       if (!province) {
         return response
@@ -44,10 +53,14 @@ router.post("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
+
   router.get("/:id/locations", async (request,response)=>{
     try {
-      const { id } = request.params;
-      const locationsArray = await provinceService.getAllLocationsByProvinceId(id);
+      console.log("1")
+      const pageSize = request.query.offset;
+      const page = request.query.limit;
+      const id = request.params.id;
+      const locationsArray = await provinceService.getAllLocationsByProvinceId(id, pageSize, page);
       if (!locationsArray) {
         return response
           .status(404)
@@ -58,7 +71,8 @@ router.post("/", async (request, response) => {
       console.error("Error al obtener la provincia por ID:", error);
       response.status(500).json({ message: "Error interno del servidor" });
     }
-  })
+  });
+
   router.put("/:id", async (request, response) => {
     try {
       const { id } = request.params;
@@ -82,6 +96,7 @@ router.post("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
+
   router.delete("/:id", async (request, response) => {
     try {
       const { id } = request.params;
@@ -96,6 +111,6 @@ router.post("/", async (request, response) => {
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
-});
+
 
 export default router;

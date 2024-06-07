@@ -35,9 +35,8 @@ router.get("/", async (request, response) => {
 //punto 4
 router.get("/:id", async (request, response) => {
   try {
-    console.log("5");
+    console.log("4");
     const id = request.params.id;
-    console.log(id);
     const detalleEvento = await eventsService.DetalleEvento(id);
     if (detalleEvento == null) {
       return response.status(404).json({ message: "No se encontró evento con dicho ID" });
@@ -78,7 +77,7 @@ router.get("/:id/enrollment", (request, response) => {
 
 //punto 8
 router.post("/", authMiddleware, async (request, response) => {
-  console.log("4")
+  console.log("8.1")
   try {
     const eventData = request.body;
     if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
@@ -93,7 +92,7 @@ router.post("/", authMiddleware, async (request, response) => {
   }
 });
 router.put("/:id", authMiddleware, async (request, response) => {
-  console.log("5")
+  console.log("8.2")
   const { id } = request.params;
   const eventData = request.body;
   if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
@@ -120,7 +119,7 @@ router.put("/:id", authMiddleware, async (request, response) => {
   }
 });
 router.delete("/:id", authMiddleware, async (request, response) => {
-  console.log("6")
+  console.log("8.3")
   const { id } = request.params;
 
   try {
@@ -144,7 +143,7 @@ router.delete("/:id", authMiddleware, async (request, response) => {
 //punto 9
 
 router.post("/:id/enrollment", authMiddleware, async (request, response) => {
-  console.log("7")
+  console.log("9.1")
   try {
     const { id_event, id_user } = request.body;
     if (id_event == null) {
@@ -165,7 +164,7 @@ router.post("/:id/enrollment", authMiddleware, async (request, response) => {
 });
 
 router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
-  console.log("8")
+  console.log("9.2")
   try {
     const { id_event, id_user } = request.body;
     if (eventsService.estadoRegistro(id_user), eventsService.datePast()) {

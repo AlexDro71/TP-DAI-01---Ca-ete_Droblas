@@ -23,46 +23,52 @@ export default class ProvinceRepository{
 
     async getAllProvinces(pageSize, page) {
         const offset = pageSize * page;
+        const intPage = parseInt(page);
+        const intPageSize = parseInt(pageSize)
         const sql = `SELECT * FROM provinces
             ORDER BY id
-            LIMIT $1 OFFSET $2`;
-        const { rows } = await this.DBClient.query(sql, [pageSize, offset]);
-        
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+            LIMIT ${intPage} OFFSET ${intPageSize}`;
+        const response = await this.DBClient.query(sql);
+        return response.rows
     }
 
     async getProvinceById(id) {
         const sql = `SELECT * FROM provinces
-            WHERE id = $1`;
-        const { rows } = await this.DBClient.query(sql, [id]);
-        
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+            WHERE id = ${id}`;
+       
+        const response = await this.DBClient.query(sql);
+        return response.rows
     }
 
-    async getAllLocationsByProvinceId(id){
-        const sql = `SELECT L.name, L.latitude, L.longitude, P.name
-        FROM L.Locations INNER JOIN P.Provinces  ON id_province = '${id}'`
-        const { rows } = await this.DBClient.query(sql, [id]);
-        
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+    async getAllLocationsByProvinceId(id, page, pageSize){
+        const intPage = parseInt(page);
+        const intPageSize = parseInt(pageSize)
+        const sql = `SELECT 
+        L.id AS location_id,
+        L.name AS location_name,
+        L.latitude,
+        L.longitude,
+        P.id AS province_id,
+        P.name AS province_name
+    FROM 
+        Locations L 
+    INNER JOIN 
+        Provinces P ON L.id_province = P.id 
+    WHERE 
+        P.id = ${id}
+    LIMIT
+        ${intPage} OFFSET ${intPageSize}
+    `;
+        console.log(sql)
+    
+        const response = await this.DBClient.query(sql);
+        return response.rows
 
     }
 
     async putProvince(id, name, fullName, latitude, longitude) {
         const sql = `UPDATE provinces
-            SET name = $1, full_name = $2, latitude = $3, longitude = $4
+            SET name = ${id}, full_name = ${name}, latitude = ${latitude}, longitude = ${longitude}
             WHERE id = $5
             RETURNING *`;
         const { rows } = await this.DBClient.query(sql, [name, fullName, latitude, longitude, id]);
