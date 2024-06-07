@@ -7,19 +7,20 @@ const router = express.Router();
 router.post("/", async (request, response) => {
   try {
     const name = request.query.name;
-    console.log(name)
     const fullName = request.query.full_name;
     const latitude = request.query.latitude;
-    console.log(latitude)
     const longitude = request.query.longitude;
-    console.log(longitude)
 
-    if (name.length < 3 || latitude != 'number' || longitude != 'number') {
+    console.log("name", name.length);
+    console.log("latitude", Number(latitude));
+    console.log("longitude", Number(longitude));
+
+     if (name.length < 3 || Number(latitude) == NaN || Number(longitude) ==  NaN) {
       return response.status(400).json({ message: "El nombre es muy corto o hay datos de tipo incorrectos" });
-    }else{
+    }else{ 
     const newProvince = await provinceService.crearProvince(name, fullName, latitude, longitude);
     response.status(201).json(newProvince);
-  }
+    }
   } catch (error) {
     console.error("Error al crear la provincia:", error);
     response.status(500).json({ message: "Error interno del servidor" });
@@ -75,36 +76,46 @@ router.post("/", async (request, response) => {
 
   router.put("/:id", async (request, response) => {
     try {
-      const { id } = request.params;
-      const { name, fullName, latitude, longitude } = request.body;
-      if(name.length<3 || tyoeof(latitude) != 'number' || typeof(longitude) != 'number' ){
+      const id = request.params.id;
+      const name = request.query.name;
+      console.log("name", name.length);
+      const fullName = request.query.full_name;
+      console.log(fullName);
+      const latitude = request.query.latitude;
+      console.log("latitude", Number(latitude));
+      const longitude = request.query.longitude;
+      console.log("longitude", Number(longitude));
+      
+      if(name.length<3 || Number(latitude) == NaN || Number(longitude) ==  NaN ){
         return response.status(400).json({message: "El nombre es muy corto o hay datos de tipo incorrectos"})
-      }else if(id == null){
-        return response.status(404).json({message: "ID no encontrado"})}
-        else{
-      const updatedProvince = await provinceService.putProvince(
-        id,
-        name,
-        fullName,
-        latitude,
-        longitude
-      );
-    }
-      response.status(200).json(updatedProvince);
+      }else 
+      if(id == null) {
+        return response.status(404).json({message: "ID no encontrado"});
+      } else {
+        const updatedProvince = await provinceService.putProvince(
+          id,
+          name,
+          fullName,
+          latitude,
+          longitude
+        );
+        response.status(200).json(updatedProvince);
+      }
     } catch (error) {
       console.error("Error al editar la provincia:", error);
       response.status(500).json({ message: "Error interno del servidor" });
     }
   });
+  
 
   router.delete("/:id", async (request, response) => {
     try {
-      const { id } = request.params;
+      const id = request.params.id;
       if(id == null){
         return response.status(404).json({message: "ID no encontrado"})}
         else{
       await provinceService.borrarProvince(id);
-      response.status(200).end();
+      response.status(200).json({message: "se elimino correctamente"});
     }
     } catch (error) {
       console.error("Error al eliminar la provincia:", error);

@@ -7,15 +7,15 @@ export default class UsersService {
         const returnArray = await repo.crearUsuario(first_name, last_name, username, password);
         return returnArray;
     }
-    recibirToken = async (username, password) => {
-        const repo = new UsersRepository();
-        const validarUsuario = repo.validarUsuario(username, password)
-        if(validarUsuario){
-            return generarToken(validarUsuario.id, validarUsuario.username)
-            
-        }else{
-            return false;
-        }
+recibirToken = async (username, password) => {
+    const repo = new UsersRepository();
+    const validarUsuario = await repo.usuarioExiste(username, password); 
+    if(validarUsuario){
+        return this.generarToken(validarUsuario.id, validarUsuario.username); 
+    } else {
+        return false;
+    }
+
     }
     generarToken = async (id, username) =>{
         const payload = {
@@ -34,7 +34,7 @@ export default class UsersService {
         return token;
         }
     validarMail = async(email) => {
-        regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        const regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
         if(regex.test(email)){
             return true;
         }else{

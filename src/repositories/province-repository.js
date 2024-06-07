@@ -10,15 +10,15 @@ export default class ProvinceRepository{
  
     //Punto 7
      async crearProvince(name, fullName, latitude, longitude) {
+        const intlatitude = parseInt(latitude);
+        const intlongitude = parseInt(longitude)
         const sql = `INSERT INTO provinces (name, full_name, latitude, longitude)
-            VALUES ($1, $2, $3, $4)
+            VALUES ('${name}', '${fullName}', ${intlatitude}, ${intlongitude})
             RETURNING *`;
-        const { rows } = await this.DBClient.query(sql, [name, fullName, latitude, longitude]);
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+            console.log(sql)
+            const response = await this.DBClient.query(sql);
+            return response.rows
+        
     }
 
     async getAllProvinces(pageSize, page) {
@@ -67,23 +67,22 @@ export default class ProvinceRepository{
     }
 
     async putProvince(id, name, fullName, latitude, longitude) {
+        const intlatitude = parseInt(latitude);
+        const intlongitude = parseInt(longitude)
         const sql = `UPDATE provinces
-            SET name = ${id}, full_name = ${name}, latitude = ${latitude}, longitude = ${longitude}
-            WHERE id = $5
+            SET name = '${name}', full_name = '${fullName}', latitude = ${intlatitude}, longitude = ${intlongitude}
+            WHERE id = ${id}
             RETURNING *`;
-        const { rows } = await this.DBClient.query(sql, [name, fullName, latitude, longitude, id]);
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+            const response = await this.DBClient.query(sql);
+            return response.rows
         
     }
 
     async borrarProvince(id) {
         const sql = `DELETE FROM provinces
-            WHERE id = $1`;
-        await this.DBClient.query(sql, [id]);
+            WHERE id = ${id}`;
+            const response = await this.DBClient.query(sql);
+            return response.rows
     }
 }
 

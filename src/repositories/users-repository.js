@@ -10,25 +10,23 @@ export default class UsersRepository{
     
     async crearUsuario(first_name, last_name, username, password){
         const sql = `INSERT INTO users (first_name, last_name, username, password)
-            VALUES ($1, $2, $3, $4)
-            RETURNING *`;
-        const { rows } = await this.DBClient.query(sql, [first_name, last_name, username, password]);
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+        VALUES ('${first_name}', '${last_name}', '${username}', '${password}')
+        RETURNING *;`;
+            console.log(sql)
+            const response = await this.DBClient.query(sql);
+            return response.rows, console.log(`Usuario '${username}' creado Correctamente`)
     }
 
     async usuarioExiste(username, password){
         const sql = `SELECT * 
         FROM users
-        WHERE username = $1 and password = $2`
-        const {rows} = await this.DBClient.query(sql, [username, password])
-        if(result.rows.length > 0){
-            return rows[0];
+        WHERE username = '${username}' and password = '${password}'`
+        console.log(sql)
+        const response = await this.DBClient.query(sql);
+        if(response.rows == ""){
+            return false;
         }else{
-            return console.error("Sad Papu :V");
+        return response.rows
         }
     }
 }
