@@ -77,10 +77,19 @@ router.get("/:id/enrollment", (request, response) => {
 
 //punto 8
 router.post("/", authMiddleware, async (request, response) => {
-  console.log("8.1")
   try {
-    const eventData = request.body;
-    if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
+    const name = request.query.name;
+    const description = request.query.description;
+    const id_event_category = request.query.id_event_category;
+    const id_event_location = request.query.id_event_location;
+    const start_date = request.query.start_date;
+    const duration_in_minutes = request.query.duration_in_minutes;
+    const price = request.query.price;
+    const enabled_for_enrollment = request.query.enabled_for_enrollment;
+    const max_assistance = request.query.max_assistance
+    const id_creator_user = request.user.id
+
+    if(name<3 || descrption<3 || eventsService.excedeAsistencia() || price<0 || duration_in_minutes<0){
       return response.status(400).json({message: "Error en los datos del evento"})
     }else{
     const nuevoEvent = await eventsService.crearEvent(eventData);

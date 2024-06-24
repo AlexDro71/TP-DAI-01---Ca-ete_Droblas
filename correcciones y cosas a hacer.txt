@@ -1,4 +1,5 @@
 repositories:
+Punto 7: Delete: Confirmar que el id exista
 agregar a punto 8 reposirtory "where id_creator_user = req.body.id"
 funciones events x enrollments:
 excedeAsistencia: el max assistance de un evento es mayor al max capacity de un event-location

@@ -7,13 +7,12 @@ router.post("/login", async (request, response) => {
   try {
     const username = request.query.username;
     const password = request.query.password;
-    const login = await usersService.recibirToken(username, password);
-    console.log(login.token);
+    const login = await usersService.recibirToken(username, password); 
     if (login) {
       return response.status(200).json({
         succes: true,
         message: "Inicio correcto",
-        token: login.token,
+        token: login,
       });
     } else {
       response.status(401).json({
@@ -45,7 +44,7 @@ router.post("/register", async (request, response) => {
       username,
       password
     );
-    response.status(201).json(nuevoUser);
+    response.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
     console.error("Error al crear algo", error);
     response.status(500).json({ message: "Error interno del servidor" });
