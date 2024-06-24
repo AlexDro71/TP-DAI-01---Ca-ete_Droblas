@@ -8,6 +8,7 @@ router.post("/login", async (request, response) => {
     const username = request.query.username;
     const password = request.query.password;
     const login = await usersService.recibirToken(username, password);
+    console.log(login.token);
     if (login) {
       return response.status(200).json({
         succes: true,

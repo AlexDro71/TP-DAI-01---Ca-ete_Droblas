@@ -20,22 +20,21 @@ export default class EventRepository{
         console.log(page, pageSize)
         let queryAgregado=``
         if(name != null){
-            queryAgregado += `AND e.name = "${name}"`
+            queryAgregado += `AND e.name = '${name}'`
         }
         if(startDate != null){
-            queryAgregado += `AND e.start_date = "${startDate}"`
+            queryAgregado += `AND e.start_date = '${startDate}'`
         }
         if(category != null){
-            queryAgregado += `AND ec.name = "${category}"`
+            queryAgregado += `AND ec.name = '${category}'`
         }
         if(tag != null){
-            queryAgregado += `AND t.name = "${tag}"`
+            queryAgregado += `AND t.name = '${tag}'`
         }
 
         const sql = `
-            SELECT e.id, e.name, e.description, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, 
-            t.name, u.id, u.username, u.first_name, u.last_name, ec.id, ec.name, /* el.id, el.name, el.full_address, el.latitude, el.longitude, el.max_capacity,
-            l.id, l.name, l.longitude, l.latitude, p.id, p.ma,e, p.full_name, p.latitude, p.longitude */ 
+            SELECT e.id, e.name, e.description, e.id_event_category, e.id_event_location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance,
+             e.id_creator_user,
             json_build_object(
                 'id', el.id,
                 'name', el.name,
@@ -58,6 +57,13 @@ export default class EventRepository{
                 'longitude', p.longitude,
                 'display_order', p.display_order
             ) AS province,
+            json_build_object(
+                'id', u.id,
+                'first_name', u.first_name,
+           'last_name', u.last_name,
+           'username', u.username,
+           'password', u.password
+           ) AS creator_user,
             array(
                 SELECT json_build_object(
                     'id', tags.id,
