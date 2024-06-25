@@ -43,21 +43,11 @@ export default class ProvinceRepository{
     async getAllLocationsByProvinceId(id, page, pageSize){
         const intPage = parseInt(page);
         const intPageSize = parseInt(pageSize)
-        const sql = `SELECT 
-        L.id AS location_id,
-        L.name AS location_name,
-        L.latitude,
-        L.longitude,
-        P.id AS province_id,
-        P.name AS province_name
-    FROM 
-        Locations L 
-    INNER JOIN 
-        Provinces P ON L.id_province = P.id 
-    WHERE 
-        P.id = ${id}
-    LIMIT
-        ${intPage} OFFSET ${intPageSize}
+        const sql = `SELECT  L.id AS location_id, L.name AS location_name, L.latitude, L.longitude, P.id AS province_id, P.name AS province_name
+    FROM Locations L 
+    INNER JOIN Provinces P ON L.id_province = P.id 
+    WHERE P.id = ${id}
+    LIMIT ${intPage} OFFSET ${intPageSize}
     `;
         console.log(sql)
     

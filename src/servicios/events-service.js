@@ -9,7 +9,7 @@ export default class EventsService{
         collection: returnArray,
         pageSize: pageSize,
         page: page,
-        nextPage: `http://localhost/3508/events?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
+        nextPage: `http://localhost:3508/api/event/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
     };
     }
 
