@@ -30,17 +30,17 @@ export default class EventsService{
     }
     getEventById = async (eventId) =>{
         const repo = new EventRepository();
-        const returnArray = await repo.getEventById(eventId);
+        const returnArray = await repo.DetalleEvento(eventId);
         return returnArray;
     }
-    putEvent = async(eventId, eventData) =>{
+    putEvent = async(eventId, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) =>{
         const repo = new EventRepository();
-        const returnArray = await repo.putEvent(eventId, eventData);
+        const returnArray = await repo.putEvent(eventId.id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
         return returnArray;
     }
     borrarEvent = async(eventId) =>{
         const repo = new EventRepository();
-        const returnArray = await repo.borrarEvent(eventId);
+        const returnArray = await repo.borrarEvent(eventId.id);
         return returnArray;
     }    
     registerUser = async(eventId) =>{

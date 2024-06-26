@@ -68,9 +68,12 @@ export default class ProvinceRepository{
         
     }
 
+    
+
     async borrarProvince(id) {
         const sql = `DELETE FROM provinces
             WHERE id = ${id}`;
+            console.log(sql)
             const response = await this.DBClient.query(sql);
             return response.rows
     }

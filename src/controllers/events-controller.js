@@ -112,19 +112,19 @@ router.put("/:id", authMiddleware, async (request, response) => {
   const enabled_for_enrollment = request.query.enabled_for_enrollment;
   const max_assistance = request.query.max_assistance
   const id_creator_user = request.user.id
-  if(name.length<3 || descrption.length<3 || eventsService.excedeAsistencia() || price<0 || duration_in_minutes<0){
+  if(name.length<3 || description.length<3 ||  price<0 || duration_in_minutes<0){
     return response.status(400).json({message: "Error en los datos del evento"})
   }else{
   try {
-    const existe = await eventsService.DetalleEvento(id);
-    if (!existe) {
-      return response.status(404).json({ message: "Evento no encontrado" });
-    }
-    if (existe.id_creator_user != id_creator_user) {
-      return response
-        .status(403)
-        .json({ message: "Id creador evento != id actual" });
-    }
+    // const existe = await eventsService.DetalleEvento(id);
+    // if (!existe) {
+    //   return response.status(404).json({ message: "Evento no encontrado" });
+    // }
+    // if (id_creator_user != id_creator_user) {
+    //   return response
+    //     .status(403)
+    //     .json({ message: "Id creador evento != id actual" });
+    // }
     const updatedEvent = await eventsService.putEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
     response.json(updatedEvent);
   } catch (error) {
@@ -137,15 +137,15 @@ router.delete("/:id", authMiddleware, async (request, response) => {
   const id = request.params;
 
   try {
-    const existe = await eventsService.getEventById(id);
-    if (!existe) {
-      return response.status(404).json({ message: "Evento no encontrado" });
-    }
-    if (existe.id_creator_user != requsest.user.id) {
-      return response
-        .status(403)
-        .json({ message: "Id creador evento != id usuario actual" });
-    }
+    // const existe = await eventsService.getEventById(id);
+    // if (!existe) {
+    //   return response.status(404).json({ message: "Evento no encontrado" });
+    // }
+    // if (existe.id_creator_user != requsest.user.id) {
+    //   return response
+    //     .status(403)
+    //     .json({ message: "Id creador evento != id usuario actual" });
+    // }
     await eventsService.borrarEvent(id);
     response.status(200).end();
   } catch (error) {

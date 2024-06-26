@@ -11,7 +11,7 @@ recibirToken = async (username, password) => {
     const repo = new UsersRepository();
     const validarUsuario = await repo.usuarioExiste(username, password); 
     if(validarUsuario){
-       const token = this.generarToken(validarUsuario.id, validarUsuario.username); 
+       const token = this.generarToken(validarUsuario[0].id, validarUsuario[0].username); 
         return token; 
     } else {
         return false;
@@ -19,6 +19,7 @@ recibirToken = async (username, password) => {
 
     }
     generarToken = async (id, username) =>{
+        console.log("id:", id)
         const payload = {
             id: id,
             username: username

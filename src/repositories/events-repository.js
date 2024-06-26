@@ -185,33 +185,27 @@ export default class EventRepository{
         VALUES ('${name}', '${description}', '${id_event_category}', '${id_event_location}', '${start_date}', '${duration_in_minutes}', '${price}', '${enabled_for_enrollment}', '${max_assistance}', '${id_creator_user}')
         RETURNING *
     `;
-    log(sql)
+    console.log(sql)
     const response = await this.DBClient.query(sql);
     return response.rows
     }
 
     async putEvent(eventId, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) {
-     ;
     const sql = `
         UPDATE events
-        SET name = '${name}', description = '${description}', id_event_category = $'${id_event_category}', id_event_location = '${id_event_location}', start_date = '${start_date}', duration_in_minutes = '${duration_in_minutes}', 
+        SET name = '${name}', description = '${description}', id_event_category = '${id_event_category}', id_event_location = '${id_event_location}', start_date = '${start_date}', duration_in_minutes = '${duration_in_minutes}', 
         price = '${price}', enabled_for_enrollment = '${enabled_for_enrollment}', max_assistance = '${max_assistance}', id_creator_user = '${id_creator_user}'
         WHERE id = '${eventId}'
-        RETURNING *
-    `;
-    const { rows } = await this.DBClient.query(sql, [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, eventId]);
-    if(result.rows.length > 0){
-        return rows[0];
-    }else{
-        return console.error("Sad Papu :V");
-    }
+        RETURNING * `;
+    // console.log(sql)
+    const response = await this.DBClient.query(sql);
+    return response.rows
+    
     }
     async borrarEvent(eventId) {
     const sql = `
-        DELETE FROM events
-        WHERE id = '${eventId}'
-    `;
-    await this.DBClient.query(sql, [eventId]);
+        DELETE FROM event_tags WHERE id_event = '${eventId}'; DELETE FROM event_enrollments WHERE id_event = '${eventId}'; DELETE FROM events WHERE id = '${eventId}' `;
+    await this.DBClient.query(sql);
 }
 
 //punto 9
