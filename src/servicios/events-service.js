@@ -23,9 +23,9 @@ export default class EventsService{
         const returnArray = await repo.listaUsuarios(id, first, last, username, attended, rating);
         return returnArray;
     }
-    crearEvent = async(eventData) =>{
+    crearEvent = async(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) =>{
         const repo = new EventRepository();
-        const returnArray = await repo.crearEvent(eventData);
+        const returnArray = await repo.crearEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
         return returnArray;
     }
     getEventById = async (eventId) =>{

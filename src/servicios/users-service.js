@@ -12,7 +12,6 @@ recibirToken = async (username, password) => {
     const validarUsuario = await repo.usuarioExiste(username, password); 
     if(validarUsuario){
        const token = this.generarToken(validarUsuario.id, validarUsuario.username); 
-        console.log(token)
         return token; 
     } else {
         return false;
@@ -33,7 +32,7 @@ recibirToken = async (username, password) => {
         }
         
         const token = jwt.sign(payload, secretKey, options)
-        console.log(token)
+    
         return token;
         }
     validarMail = async(email) => {

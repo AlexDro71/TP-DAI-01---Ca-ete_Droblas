@@ -11,9 +11,7 @@ router.post("/", async (request, response) => {
     const latitude = request.query.latitude;
     const longitude = request.query.longitude;
 
-    console.log("name", name.length);
-    console.log("latitude", Number(latitude));
-    console.log("longitude", Number(longitude));
+
 
      if (name.length < 3 || Number(latitude) == NaN || Number(longitude) ==  NaN) {
       return response.status(400).json({ message: "El nombre es muy corto o hay datos de tipo incorrectos" });
@@ -57,7 +55,7 @@ router.post("/", async (request, response) => {
 
   router.get("/:id/locations", async (request,response)=>{
     try {
-      console.log("1")
+ 
       const pageSize = request.query.offset;
       const page = request.query.limit;
       const id = request.params.id;
@@ -78,13 +76,13 @@ router.post("/", async (request, response) => {
     try {
       const id = request.params.id;
       const name = request.query.name;
-      console.log("name", name.length);
+  
       const fullName = request.query.full_name;
-      console.log(fullName);
+
       const latitude = request.query.latitude;
-      console.log("latitude", Number(latitude));
+ 
       const longitude = request.query.longitude;
-      console.log("longitude", Number(longitude));
+    
       
       if(name.length<3 || Number(latitude) == NaN || Number(longitude) ==  NaN ){
         return response.status(400).json({message: "El nombre es muy corto o hay datos de tipo incorrectos"})

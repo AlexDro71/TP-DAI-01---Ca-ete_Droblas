@@ -34,7 +34,7 @@ router.post("/register", async (request, response) => {
     const username = request.query.username;
     const password = request.query.password;
     const valido = await usersService.validarMail(username)
-    console.log(valido)
+
     if (first_name == "" || last_name == "" || password.length < 3 ||!valido) {
       return response.status(400).json({ message: "Datos no validos" });
     }

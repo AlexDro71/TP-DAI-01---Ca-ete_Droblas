@@ -7,7 +7,7 @@ const eventsService = new EventsService();
 
 // punto 2 y 3
 router.get("/", async (request, response) => {
-  console.log("1")
+
   const pageSize = request.query.offset;
   const page = request.query.limit;
   const name = request.query.name;
@@ -23,10 +23,10 @@ router.get("/", async (request, response) => {
           page,
           pageSize
       );
-      console.log(BusquedaEvent)
+  
       return response.status(200).send(BusquedaEvent);
   } catch (error) {
-      console.log(error);
+     
       return response.json("La hora sad :'v");
   }
 });
@@ -35,7 +35,7 @@ router.get("/", async (request, response) => {
 //punto 4
 router.get("/:id", async (request, response) => {
   try {
-    console.log("4");
+
     const id = request.params.id;
     const detalleEvento = await eventsService.DetalleEvento(id);
     if (detalleEvento == null) {
@@ -51,9 +51,9 @@ router.get("/:id", async (request, response) => {
 
 //punto 5
 router.get("/:id/enrollment", (request, response) => {
-  console.log("3")
+
   const id = request.query.id;
-  console.log(id)
+
   const first = request.query.first_name;
   const last = request.query.last_name;
   const user = request.query.username;
@@ -89,10 +89,10 @@ router.post("/", authMiddleware, async (request, response) => {
     const max_assistance = request.query.max_assistance
     const id_creator_user = request.user.id
 
-    if(name<3 || descrption<3 || eventsService.excedeAsistencia() || price<0 || duration_in_minutes<0){
+    if(name<3 || description<3 || price<0 || duration_in_minutes<0){
       return response.status(400).json({message: "Error en los datos del evento"})
     }else{
-    const nuevoEvent = await eventsService.crearEvent(eventData);
+    const nuevoEvent = await eventsService.crearEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
     response.status(201).json(nuevoEvent);
   }
   } catch (error) {
@@ -101,25 +101,31 @@ router.post("/", authMiddleware, async (request, response) => {
   }
 });
 router.put("/:id", authMiddleware, async (request, response) => {
-  console.log("8.2")
-  const { id } = request.params;
-  const eventData = request.body;
-  if(eventData.name.length<3 || eventData.descrption.length<3 || eventsService.excedeAsistencia() || eventData.price<0 || eventData.duration_in_minutes<0){
+  const id = request.params;
+  const name = request.query.name;
+  const description = request.query.description;
+  const id_event_category = request.query.id_event_category;
+  const id_event_location = request.query.id_event_location;
+  const start_date = request.query.start_date;
+  const duration_in_minutes = request.query.duration_in_minutes;
+  const price = request.query.price;
+  const enabled_for_enrollment = request.query.enabled_for_enrollment;
+  const max_assistance = request.query.max_assistance
+  const id_creator_user = request.user.id
+  if(name.length<3 || descrption.length<3 || eventsService.excedeAsistencia() || price<0 || duration_in_minutes<0){
     return response.status(400).json({message: "Error en los datos del evento"})
-  }else if(eventData.id == null){
-    return response.status(404).json({message: "ID no encontrado"})
   }else{
   try {
-    const existe = await eventsService.getEventById(id);
+    const existe = await eventsService.DetalleEvento(id);
     if (!existe) {
       return response.status(404).json({ message: "Evento no encontrado" });
     }
-    if (existe.id_creator_user != eventData.id_creator_user) {
+    if (existe.id_creator_user != id_creator_user) {
       return response
         .status(403)
         .json({ message: "Id creador evento != id actual" });
     }
-    const updatedEvent = await eventsService.putEvent(id, eventData);
+    const updatedEvent = await eventsService.putEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
     response.json(updatedEvent);
   } catch (error) {
     console.error("Error al editar el evento:", error);
@@ -128,18 +134,17 @@ router.put("/:id", authMiddleware, async (request, response) => {
   }
 });
 router.delete("/:id", authMiddleware, async (request, response) => {
-  console.log("8.3")
-  const { id } = request.params;
+  const id = request.params;
 
   try {
     const existe = await eventsService.getEventById(id);
     if (!existe) {
       return response.status(404).json({ message: "Evento no encontrado" });
     }
-    if (existe.id_creator_user != requcreator_usest.body.id_er) {
+    if (existe.id_creator_user != requsest.user.id) {
       return response
         .status(403)
-        .json({ message: "Id creador evento != id actual" });
+        .json({ message: "Id creador evento != id usuario actual" });
     }
     await eventsService.borrarEvent(id);
     response.status(200).end();
@@ -152,7 +157,7 @@ router.delete("/:id", authMiddleware, async (request, response) => {
 //punto 9
 
 router.post("/:id/enrollment", authMiddleware, async (request, response) => {
-  console.log("9.1")
+
   try {
     const { id_event, id_user } = request.body;
     if (id_event == null) {
@@ -173,7 +178,7 @@ router.post("/:id/enrollment", authMiddleware, async (request, response) => {
 });
 
 router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
-  console.log("9.2")
+ 
   try {
     const { id_event, id_user } = request.body;
     if (eventsService.estadoRegistro(id_user), eventsService.datePast()) {
@@ -192,7 +197,7 @@ router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
 
 //punto 10
 router.patch("/:id/enrollment/:rating", authMiddleware, async (request, response) => {
-  console.log("10")
+ 
     try {
       const { id, rating } = request.params;
       const event = await eventsService.getEventById(id);

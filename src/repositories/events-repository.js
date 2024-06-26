@@ -1,5 +1,6 @@
 import pg from "pg";
 import { DBconfig } from "../../database/DB.js";
+import { log } from "console";
 
 
 
@@ -7,7 +8,7 @@ export default class EventRepository{
     constructor () {
         const {Client} = pg;
         this.DBClient = new Client(DBconfig);
-        console.log(DBconfig)
+
         this.DBClient.connect();
         
     }
@@ -17,7 +18,7 @@ export default class EventRepository{
         const intPage = parseInt(page);
         const intPageSize = parseInt(pageSize)
 
-        console.log(page, pageSize)
+  
         let queryAgregado=``
         if(name != null){
             queryAgregado += `AND e.name = '${name}'`
@@ -177,37 +178,25 @@ export default class EventRepository{
    
 
     //punto 8
-    async crearEvent(eventData) {
-    const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
+    async crearEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) {
+    
     const sql = `
         INSERT INTO events (name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        VALUES ('${name}', '${description}', '${id_event_category}', '${id_event_location}', '${start_date}', '${duration_in_minutes}', '${price}', '${enabled_for_enrollment}', '${max_assistance}', '${id_creator_user}')
         RETURNING *
     `;
-    const { rows } = await this.DBClient.query(sql, [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user]);
-    if(result.rows.length > 0){
-        return rows[0];
-    }else{
-        return console.error("Sad Papu :V");
+    log(sql)
+    const response = await this.DBClient.query(sql);
+    return response.rows
     }
-    }
-    async getEventById(eventId) {
-    const sql = `
-        SELECT * FROM events
-        WHERE id = $1`;
-    const { rows } = await this.DBClient.query(sql, [eventId]);
-    if(result.rows.length > 0){
-        return rows[0];
-    }else{
-        return console.error("Sad Papu :V");
-    }
-    }
-    async putEvent(eventId, eventData) {
-    const { name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user } = eventData;
+
+    async putEvent(eventId, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) {
+     ;
     const sql = `
         UPDATE events
-        SET name = $1, description = $2, id_event_category = $3, id_event_location = $4, start_date = $5, duration_in_minutes = $6, price = $7, enabled_for_enrollment = $8, max_assistance = $9
-        WHERE id = $10
+        SET name = '${name}', description = '${description}', id_event_category = $'${id_event_category}', id_event_location = '${id_event_location}', start_date = '${start_date}', duration_in_minutes = '${duration_in_minutes}', 
+        price = '${price}', enabled_for_enrollment = '${enabled_for_enrollment}', max_assistance = '${max_assistance}', id_creator_user = '${id_creator_user}'
+        WHERE id = '${eventId}'
         RETURNING *
     `;
     const { rows } = await this.DBClient.query(sql, [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, eventId]);
