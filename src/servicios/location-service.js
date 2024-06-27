@@ -2,7 +2,7 @@ import LocationRepository from './../../src/repositories/location-repository.js'
 export default class LocationService{
     getAlllocations = async (page, pageSize) =>{
         const repo = new LocationRepository();
-        const returnArray = await repo.getAlllocations();
+        const returnArray = await repo.getAllLocations();
         return{
             collection: returnArray,
             pageSize: pageSize,

@@ -37,7 +37,7 @@ router.post("/", async (request, response) => {
             .status(404)
             .json({ message: "Categoria no encontrada" });
         }
-        response.json(categoria);
+        response.status(200).json(categoria);
       } catch (error) {
         console.error("Error al obtener la categoria por ID:", error);
         response.status(500).json({ message: "Error interno del servidor" });

@@ -24,10 +24,10 @@ router.get("/", async (request, response) => {
           pageSize
       );
   
-      return response.status(200).send(BusquedaEvent);
+      return response.status(200).json(BusquedaEvent);
   } catch (error) {
      
-      return response.json("La hora sad :'v");
+      return response.status(400).json("La hora sad :'v");
   }
 });
 
@@ -71,7 +71,7 @@ router.get("/:id/enrollment", (request, response) => {
     return response.json(ListaUsuarios);
   } catch (error) {
     console.log("Un eror Papu :V");
-    return response.json("La hora sad :'v");
+    return response.status(400).json("La hora sad :'v");
   }
 });
 
@@ -126,7 +126,7 @@ router.put("/:id", authMiddleware, async (request, response) => {
     //     .json({ message: "Id creador evento != id actual" });
     // }
     const updatedEvent = await eventsService.putEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
-    response.json(updatedEvent);
+    response.status(200).json(updatedEvent);
   } catch (error) {
     console.error("Error al editar el evento:", error);
     response.status(500).json({ message: "Error interno del servidor" });
