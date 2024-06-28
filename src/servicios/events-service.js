@@ -43,12 +43,14 @@ export default class EventsService{
         const returnArray = await repo.borrarEvent(eventId.id);
         return returnArray;
     }    
-    registerUser = async(eventId) =>{
+
+
+    registerUser = async(id_event, id_user, description, attended, observations, rating, registration_date_time) =>{
         const repo = new EventRepository();
-        const returnArray = await repo.registerUser(id_event, id_user);
+        const returnArray = await repo.registerUser(id_event, id_user, description, attended, observations, rating, registration_date_time);
         return returnArray;
     }
-    unregisterUser = async(eventId) =>{
+    unregisterUser = async(id_event, id_user) =>{
         const repo = new EventRepository();
         const returnArray = await repo.unregisterUser(id_event, id_user);
         return returnArray;
@@ -68,6 +70,23 @@ export default class EventsService{
             } catch (e){
                 console.error(e);
             }
+        }
+        conseguirHora = async() => {
+                let fecha = new Date();
+            
+                let dia = fecha.getDate();
+                let mes = fecha.getMonth() + 1; 
+                let año = fecha.getFullYear();
+                let horas = fecha.getHours();
+                let minutos = fecha.getMinutes();
+                let segundos = fecha.getSeconds();
+                minutos = minutos < 10 ? '0' + minutos : minutos;
+                segundos = segundos < 10 ? '0' + segundos : segundos;
+            
+                let fechaHoraActual = año + '-' + mes + '-' + dia + ' ' + horas + ':' + minutos + ':' + segundos;
+            
+                return fechaHoraActual;
+            
         }
         
     

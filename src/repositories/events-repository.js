@@ -209,25 +209,22 @@ export default class EventRepository{
 }
 
 //punto 9
-async registerUser(id_event, id_user){
-    const sql = `INSERT INTO enrollments (id_event, id_user)
-    VALUES ($1, $2)
+async registerUser(id_event, id_user, description, attended, observations, rating, registration_date_time){
+    const sql = `INSERT INTO event_enrollments (id_event, id_user, description, registration_date_time, attended, observations, rating)
+    VALUES ('${id_event}', '${id_user}', '${description}', '${registration_date_time}', '${attended}', '${observations}', '${rating}')
     RETURNING *`
-    const {rows} = await this.DBClient.query(sql, [id_event, id_user])
-    if(result.rows.length > 0){
-        return rows[0];
-    }else{
-        return console.error("Sad Papu :V");
-    }
+    console.log(sql)
+    const response = await this.DBClient.query(sql);
+    return response.rows
 }
 async unregisterUser(id_event, id_user){
 
         const sql = `
             DELETE FROM event_enrollments
-            WHERE id_event = $1 and id_user = $2
-        `;
-        await this.DBClient.query(sql, [id_event, id_user]);
-        return true;
+            WHERE id_event = '${id_event}' and id_user = '${id_user}'`;
+            console.log(sql)
+        const response = await this.DBClient.query(sql);
+        return response.rows
 }
 
 //Punto 10
