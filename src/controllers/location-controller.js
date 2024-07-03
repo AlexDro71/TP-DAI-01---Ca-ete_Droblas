@@ -8,8 +8,9 @@ const router = express.Router();
 router.get("/", async (request, response) => {
   const pageSize = request.query.offset;
   const page = request.query.limit;
+
   try {
-    const locations = await locationServiceService.getAllLocations(pageSize, page);
+    const locations = await locationService.getAlllocations(page, pageSize);
     response.status(200).json(locations);
   } catch (error) {
     console.error("Error al obtener todas las localidades:", error);

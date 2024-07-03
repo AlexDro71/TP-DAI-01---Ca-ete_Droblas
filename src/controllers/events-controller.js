@@ -134,7 +134,7 @@ router.put("/:id", authMiddleware, async (request, response) => {
   }
 });
 router.delete("/:id", authMiddleware, async (request, response) => {
-  const id = request.params;
+  const id = request.params.id;
 
   try {
     // const existe = await eventsService.getEventById(id);
@@ -143,11 +143,11 @@ router.delete("/:id", authMiddleware, async (request, response) => {
     // }
     // if (existe.id_creator_user != requsest.user.id) {
     //   return response
-    //     .status(403)
+    //     .statusCode = 403
     //     .json({ message: "Id creador evento != id usuario actual" });
     // }
     await eventsService.borrarEvent(id);
-    response.status(200).end({message: "se elimino correctamente"});
+    response.status(200).json({message: "se elimino correctamente"});
   } catch (error) {
     console.error("Error al eliminar el evento:", error);
     response.status(500).json({ message: "Error interno del servidor" });
@@ -156,13 +156,13 @@ router.delete("/:id", authMiddleware, async (request, response) => {
 
 //punto 9
 
-router.post("/:id/enrollment", authMiddleware, async (request, response) => {
+router.post("/:id/enrollment/:entero", authMiddleware, async (request, response) => {
   const id_event = request.params.id
   const id_user = request.user.id
   const description = request.query.description
   const attended = request.query.attended
   const observations = request.query.observations
-  const rating = request.query.rating
+  const rating = request.params.entero
 
 
   try {

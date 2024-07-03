@@ -9,22 +9,23 @@ export default class LocationRepository{
         this.DBClient.connect();
     }
 
-    async getAllLocations(pageSize, page, id_province){
+    async getAllLocations(page, pageSize){
         const sql = `SELECT *
         FROM locations 
-        limit '${(pagesize)}' offset '${(requestedPage)}'`;
-   
-        return sql.execute();
+        limit '${page}' offset '${pageSize}'`;
+        const response = await this.DBClient.query(sql); 
+        return response.rows;
 
         
     }
 
     async getLocationById(id){
-        query = `SELECT * 
+        const sql = `SELECT * 
         FROM locations
         WHERE id = '${id}'`
+        const response = await this.DBClient.query(sql); 
+          return response.rows;
 
-        return query;
     }
 
     

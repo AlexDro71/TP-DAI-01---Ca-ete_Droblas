@@ -9,7 +9,7 @@ export default class EventsService{
         collection: returnArray,
         pageSize: pageSize,
         page: page,
-        nextPage: `http://localhost:3508/api/event/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
+        nextPage: `http://localhost:3508/api/event/?limit=${parseInt(page)}&offset=${parseInt(page) + pageSize}`,
     };
     }
 
@@ -39,8 +39,9 @@ export default class EventsService{
         return returnArray;
     }
     borrarEvent = async(eventId) =>{
+        console.log(eventId)
         const repo = new EventRepository();
-        const returnArray = await repo.borrarEvent(eventId.id);
+        const returnArray = await repo.borrarEvent(eventId);
         return returnArray;
     }    
 

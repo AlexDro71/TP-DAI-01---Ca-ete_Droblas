@@ -96,6 +96,7 @@ export default class EventRepository{
           U.id AS user_id, U.username, U.first_name, U.last_name, 
           json_build_object(
               'id', EL.id,
+              'id_location', EL.id_location
               'name', EL.name,
               'full_address', EL.full_address,
               'latitude', EL.latitude,
@@ -117,13 +118,11 @@ export default class EventRepository{
               'display_order', P.display_order
           ) AS province,
           (
-              SELECT json_agg(
-                  json_build_object(
-                      'id', tags.id,
-                      'name', tags.name
-                  )
-              )
-              FROM tags
+            SELECT json_build_object(
+                'id', tags.id,
+                'name', tags.name
+            )
+            FROM tags  
               JOIN event_tags ET ON tags.id = ET.id_tag
               WHERE ET.id_event = E.id
           ) AS tags
