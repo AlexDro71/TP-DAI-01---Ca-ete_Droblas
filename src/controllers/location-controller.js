@@ -32,7 +32,7 @@ router.get("/:id", async (request, response) => {
       const pageSize = request.query.offset;
       const page = request.query.limit;
         const id = request.params.id;
-        const eventLocation = await locationService.getAllEventLocationById(id, page, pageSize);
+        const eventLocation = await locationService.getAllEventLocationByLocationId(id, page, pageSize);
         response.status(200).json(eventLocation)
     }catch (error) {
             console.error("error al obtener la localidad por ID", error);

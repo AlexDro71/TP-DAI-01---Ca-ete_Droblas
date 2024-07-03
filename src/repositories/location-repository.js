@@ -28,7 +28,7 @@ export default class LocationRepository{
 
     }
 
-    async getAllEventLocationById(id, page, pageSize){
+    async getAllEventLocationByLocationId(id, page, pageSize){
         const sql = `SELECT * 
         FROM event_locations EL 
         INNER JOIN locations L ON EL.id_location = L.id

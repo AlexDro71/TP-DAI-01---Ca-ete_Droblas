@@ -16,14 +16,15 @@ export default class LocationService{
         return returnArray;
     }
 
-    getAllEventLocationById = async (id, page, pageSize) => {
+    getAllEventLocationByLocationId = async (id, page, pageSize) => {
         const repo = new LocationRepository();
-        const returnArray = await repo.getAllEventLocationById(id, page, pageSize);
+        const returnArray = await repo.getAllEventLocationByLocationId(id, page, pageSize);
+        console.log("return: " + returnArray)
         return{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
-            nextPage: `http://localhost:3508/api/location/${id}/event-location/?limit=${parseInt(page)}&offset=${parseInt(page) + pageSize}`,
+            nextPage: `http://localhost:3508/api/location/${id}/event-location/?limit=${parseInt(page)}&offset=${parseInt(page)+ parseInt(pageSize)}`,
         }
 
     }
