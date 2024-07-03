@@ -9,11 +9,11 @@ export default class ProvinceRepository{
     }
  
     //Punto 7
-     async crearProvince(name, fullName, latitude, longitude) {
+     async crearProvince(name, fullName, latitude, longitude, display_order) {
         const intlatitude = parseInt(latitude);
         const intlongitude = parseInt(longitude)
-        const sql = `INSERT INTO provinces (name, full_name, latitude, longitude)
-            VALUES ('${name}', '${fullName}', ${intlatitude}, ${intlongitude})
+        const sql = `INSERT INTO provinces (name, full_name, latitude, longitude, display_order)
+            VALUES ('${name}', '${fullName}', ${intlatitude}, ${intlongitude}, ${display_order})
             RETURNING *`;
             console.log(sql)
             const response = await this.DBClient.query(sql);

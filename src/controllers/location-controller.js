@@ -20,12 +20,7 @@ router.get("/", async (request, response) => {
 router.get("/:id", async (request, response) => {
     try {
       const id = request.params.id;
-      const location = await locationService.getlocationById(id);
-      if (!location) {
-        return response
-          .status(404)
-          .json({ message: "location no encontrado" });
-      }
+      const locations = await locationService.getlocationById(id);
       response.status(200).json(locations);
     } catch (error) {
       console.error("Error al obtener la localidad por ID:", error);
@@ -36,9 +31,9 @@ router.get("/:id", async (request, response) => {
     try{
       const pageSize = request.query.offset;
       const page = request.query.limit;
-        const id = resquest.params.id;
-        const eventLocation = await locationService.getAllEventLocationById(id);
-        response.status(200).json(locations)
+        const id = request.params.id;
+        const eventLocation = await locationService.getAllEventLocationById(id, page, pageSize);
+        response.status(200).json(eventLocation)
     }catch (error) {
             console.error("error al obtener la localidad por ID", error);
             response.status(500).json({messange: "Error interno del servidor"})

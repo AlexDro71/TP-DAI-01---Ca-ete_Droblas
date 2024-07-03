@@ -28,5 +28,16 @@ export default class LocationRepository{
 
     }
 
+    async getAllEventLocationById(id, page, pageSize){
+        const sql = `SELECT * 
+        FROM event_locations EL 
+        INNER JOIN locations L ON EL.id_location = L.id
+        WHERE L.id = ${id}
+        limit '${page}' offset '${pageSize}'`
+        console.log(sql)
+        const response = await this.DBClient.query(sql); 
+        return response.rows;
+    }
+
     
 }

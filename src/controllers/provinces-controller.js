@@ -10,13 +10,13 @@ router.post("/", async (request, response) => {
     const fullName = request.query.full_name;
     const latitude = request.query.latitude;
     const longitude = request.query.longitude;
-
+    const display_order = request.query.display_order
 
 
      if (name.length < 3 || Number(latitude) == NaN || Number(longitude) ==  NaN) {
       return response.status(400).json({ message: "El nombre es muy corto o hay datos de tipo incorrectos" });
     }else{ 
-    const newProvince = await provinceService.crearProvince(name, fullName, latitude, longitude);
+    const newProvince = await provinceService.crearProvince(name, fullName, latitude, longitude, display_order);
     response.status(201).json(newProvince);
     }
   } catch (error) {

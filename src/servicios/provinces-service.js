@@ -28,9 +28,9 @@ export default class ProvinceService{
         };
     }
 
-    crearProvince = async (name, fullName, latitude, longitude) => {
+    crearProvince = async (name, fullName, latitude, longitude, display_order) => {
         const repo = new ProvinceRepository();
-        const returnArray = await repo.crearProvince(name, fullName, latitude, longitude);
+        const returnArray = await repo.crearProvince(name, fullName, latitude, longitude, display_order);
         return returnArray;
     }
     putProvince = async (id, name, fullName, latitude, longitude)  => {
