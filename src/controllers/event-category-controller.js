@@ -47,17 +47,17 @@ router.get("/", async (request, response) => {
     });
     router.put("/:id", async (request, response) => {
       try {
-        const { id } = request.params;
-        const { name, display_order } = request.body;
-        if(name.length<3 || name==""){
-          return response.status(400).json({message: "El nombre tiene menos de 3 letras"})
+        const id  = request.params.id;
+        const name= request.body.name;
+        const display_order= request.body.display_order;
+        if(!await validaciones.existeObjeto(`event_categories`, id)){
+          return response.status(404).json({message: "Categoria del ID no encontrada"})
+        }else
+        if(await validaciones.menor3(name)){
+          return response.status(400).json({message: "El nombre tiene menos de 3 letras o esta vacio"})
         }else{
-        const updatedCategory = await eventcategoryService.putCategory(
-          id,
-          name, 
-          display_order
-        );
-        response.status(200).json(updatedCategory);
+        const updatedCategory = await eventcategoryService.putCategory(id,name, display_order);
+        return response.status(200).json(updatedCategory);
       }
       } catch (error) {
         console.error("Error al editar la categoria:", error);
@@ -66,12 +66,12 @@ router.get("/", async (request, response) => {
     });
     router.delete("/:id", async (request, response) => {
       try {
-        const { id } = request.params;
-        if(id==null){
-          return response.status(400).json({message: "ID no encontrado"})
+        const id = request.params.id;
+        if(!await validaciones.existeObjeto(`event_categories`, id)){
+          return response.status(404).json({message: "Categoria del ID no encontrada"})
         }else{
         await eventcategoryService.borrarCategory(id);
-        response.status(200).end();
+        return response.status(200).json({message: "categoria eliminada correctamente"});
       }
       } catch (error) {
         console.error("Error al eliminar la provincia:", error);

@@ -33,7 +33,7 @@ export default class EventCategoryRepository{
         return response.rows
     }
 
-    async putProvince(id, name, display_order) {
+    async putCategory(id, name, display_order) {
         const sql = `UPDATE event_categories
             SET name = '${name}', display_order = '${display_order}'
             WHERE id = '${id}'
@@ -43,9 +43,10 @@ export default class EventCategoryRepository{
     }
 
     async borrarCategory(id) {
-        const sql = `DELETE FROM event_categories
-            WHERE id = $1`;
-        await this.DBClient.query(sql, [id]);
+        const sql = `DELETE FROM events WHERE id_event_category = '${id}';
+        DELETE FROM event_categories WHERE id = '${id}'`;
+        const response = await this.DBClient.query(sql);
+        return response.rows
     }
 
 

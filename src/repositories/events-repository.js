@@ -211,7 +211,6 @@ export default class EventRepository{
         price = '${price}', enabled_for_enrollment = '${enabled_for_enrollment}', max_assistance = '${max_assistance}', id_creator_user = '${id_creator_user}'
         WHERE id = '${eventId}'
         RETURNING * `;
-    // console.log(sql)
     const response = await this.DBClient.query(sql);
     return response.rows
     
