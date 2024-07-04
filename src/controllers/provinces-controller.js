@@ -1,8 +1,9 @@
 import express from "express";
 import ProvinceService from './../servicios/provinces-service.js';
+import Validaciones from "../utils/validaciones-utils.js";
 const provinceService = new ProvinceService();
 const router = express.Router();
-
+const validaciones = new Validaciones();
 //Punto 7
 router.post("/", async (request, response) => {
   try {
@@ -11,11 +12,11 @@ router.post("/", async (request, response) => {
     const latitude = request.query.latitude;
     const longitude = request.query.longitude;
     const display_order = request.query.display_order
-
-
-     if (name.length < 3 || Number(latitude) == NaN || Number(longitude) ==  NaN) {
-      return response.status(400).json({ message: "El nombre es muy corto o hay datos de tipo incorrectos" });
-    }else{ 
+    if(validaciones.menor3(name)){
+      response.status(400).json({message: "name vacio o menor a 3 caracteres"})
+    }else if(isNaN(latitude) || isNaN(longitude)){
+      response.status(400).json({message: "latitude o longitude no son numeros"})}
+      else{
     const newProvince = await provinceService.crearProvince(name, fullName, latitude, longitude, display_order);
     response.status(201).json(newProvince);
     }
@@ -40,13 +41,12 @@ router.post("/", async (request, response) => {
     try {
     
       const id = request.params.id;
+      if (!validaciones.existeObjeto(`provinces`, id)) {
+        return response.status(404).json({ message: "Provincia del ID no encontrada" });
+      }else{
       const province = await provinceService.getProvinceById(id);
-      if (!province) {
-        return response
-          .status(404)
-          .json({ message: "Provincia no encontrada" });
+      return response.status(200).json(province);
       }
-      response.status(200).json(province);
     } catch (error) {
       console.error("Error al obtener la provincia por ID:", error);
       response.status(500).json({ message: "Error interno del servidor" });
@@ -59,9 +59,12 @@ router.post("/", async (request, response) => {
       const pageSize = request.query.offset;
       const page = request.query.limit;
       const id = request.params.id;
+      if (!validaciones.existeObjeto(`provinces`, id)) {
+        response.status(404).json({ message: "Provincia del ID no encontrada" });
+      }else{
       const locationsArray = await provinceService.getAllLocationsByProvinceId(id, pageSize, page);
-
       response.status(200).json(locationsArray);
+      }
     } catch (error) {
       console.error("Error al obtener la provincia por ID:", error);
       response.status(500).json({ message: "Error interno del servidor" });
@@ -79,20 +82,15 @@ router.post("/", async (request, response) => {
  
       const longitude = request.query.longitude;
     
-      
-      if(name.length<3 || Number(latitude) == NaN || Number(longitude) ==  NaN ){
-        return response.status(400).json({message: "El nombre es muy corto o hay datos de tipo incorrectos"})
-      }else 
-      if(id == null) {
-        return response.status(404).json({message: "ID no encontrado"});
-      } else {
-        const updatedProvince = await provinceService.putProvince(
-          id,
-          name,
-          fullName,
-          latitude,
-          longitude
-        );
+      if(!validaciones.existeObjeto(`provinces`, id)){
+        response.status(404).json({message: "No existe la provincia del ID"})
+      }
+      if(validaciones.menor3(name)){
+        response.status(400).json({message: "name vacio o menor a 3 caracteres"})
+      }else if(isNaN(latitude) || isNaN(longitude)){
+        response.status(400).json({message: "latitude o longitude no son numeros"})}
+        else{
+        const updatedProvince = await provinceService.putProvince(id, name, fullName, latitude, longitude);
         response.status(200).json(updatedProvince);
       }
     } catch (error) {
@@ -105,8 +103,8 @@ router.post("/", async (request, response) => {
   router.delete("/:id", async (request, response) => {
     try {
       const id = request.params.id;
-      if(id == null){
-        return response.status(404).json({message: "ID no encontrado"})}
+      if(!validaciones.existeObjeto(`provinces`, id)){
+        response.status(404).json({message: "ID no encontrado"})}
         else{
       await provinceService.borrarProvince(id);
       response.status(200).json({message: "se elimino correctamente"});

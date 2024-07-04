@@ -1,9 +1,11 @@
 import express from "express";
 import EventsService from "../servicios/events-service.js";
 import { authMiddleware } from "../utils/auth-utils.js";
+import Validaciones from "../utils/validaciones-utils.js";
 
 const router = express.Router();
 const eventsService = new EventsService();
+const validaciones = new Validaciones();
 
 // punto 2 y 3
 router.get("/", async (request, response) => {
@@ -38,8 +40,8 @@ router.get("/:id", async (request, response) => {
 
     const id = request.params.id;
     const detalleEvento = await eventsService.DetalleEvento(id);
-    if (detalleEvento == null) {
-      return response.status(404).json({ message: "No se encontró evento con dicho ID" });
+    if (!validaciones.existeObjeto(`events`, id)) {
+      return response.status(404).json({ message: "No se encontró evento con el ID" });
     } else {
       return response.status(200).json(detalleEvento);
     }
@@ -88,20 +90,26 @@ router.post("/", authMiddleware, async (request, response) => {
     const enabled_for_enrollment = request.query.enabled_for_enrollment;
     const max_assistance = request.query.max_assistance
     const id_creator_user = request.user.id
-
-    if(name<3 || description<3 || price<0 || duration_in_minutes<0){
-      return response.status(400).json({message: "Error en los datos del evento"})
+    if(validaciones.menor3(name)){
+      response.status(400).json({message: "name vacio o menor a 3 caracteres"})
+    } else if(validaciones.menor3(description)){
+      response.status(400).json({message: "description vacio o menor a 3 caracteres"})
+    }else if(validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
+      response.status(400).json({message: "max_assistance supera max capacity"})
+    }else if(price<0 || duration_in_minutes<0){
+      response.status(400).json({message: "price o duration_in_minutes menor a 0"})
     }else{
     const nuevoEvent = await eventsService.crearEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
     response.status(201).json(nuevoEvent);
-  }
+    }
   } catch (error) {
     console.error("Error al crear el evento:", error);
     response.status(500).json({ message: "Error interno del servidor" });
   }
 });
 router.put("/:id", authMiddleware, async (request, response) => {
-  const id = request.params;
+  try {
+    const id = request.params;
   const name = request.query.name;
   const description = request.query.description;
   const id_event_category = request.query.id_event_category;
@@ -112,42 +120,37 @@ router.put("/:id", authMiddleware, async (request, response) => {
   const enabled_for_enrollment = request.query.enabled_for_enrollment;
   const max_assistance = request.query.max_assistance
   const id_creator_user = request.user.id
-  if(name.length<3 || description.length<3 ||  price<0 || duration_in_minutes<0){
-    return response.status(400).json({message: "Error en los datos del evento"})
+  if (!validaciones.existeObjeto(`events`, id)) {
+    return response.status(404).json({ message: "No se encontró evento con el ID" });
+  }else if(validaciones.menor3(name)){
+    response.status(400).json({message: "name vacio o menor a 3 caracteres"})
+  } else if(validaciones.menor3(description)){
+    response.status(400).json({message: "description vacio o menor a 3 caracteres"})
+  }else if(validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
+    response.status(400).json({message: "max_assistance supera max capacity"})
+  }else if(price<0 || duration_in_minutes<0){
+    response.status(400).json({message: "price o duration_in_minutes menor a 0"})
   }else{
-  try {
-    // const existe = await eventsService.DetalleEvento(id);
-    // if (!existe) {
-    //   return response.status(404).json({ message: "Evento no encontrado" });
-    // }
-    // if (id_creator_user != id_creator_user) {
-    //   return response
-    //     .status(403)
-    //     .json({ message: "Id creador evento != id actual" });
-    // }
     const updatedEvent = await eventsService.putEvent(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
     response.status(200).json(updatedEvent);
+  }
   } catch (error) {
     console.error("Error al editar el evento:", error);
     response.status(500).json({ message: "Error interno del servidor" });
   }
-  }
-});
+  });
 router.delete("/:id", authMiddleware, async (request, response) => {
-  const id = request.params.id;
-
   try {
-    // const existe = await eventsService.getEventById(id);
-    // if (!existe) {
-    //   return response.status(404).json({ message: "Evento no encontrado" });
-    // }
-    // if (existe.id_creator_user != requsest.user.id) {
-    //   return response
-    //     .statusCode = 403
-    //     .json({ message: "Id creador evento != id usuario actual" });
-    // }
+    const id = request.params.id;
+    if (!validaciones.existeObjeto(`events`, id)) {
+      return response.status(404).json({ message: "No se encontró evento con el ID" });
+    }else if(validaciones.min1Usuario(id)){
+      return response.status(404).json({message: "Hay minimo 1 usuario registrado al evento"})
+    }
+    else{
     await eventsService.borrarEvent(id);
-    response.status(200).json({message: "se elimino correctamente"});
+    return response.status(200).json({message: "se elimino correctamente"});
+    }
   } catch (error) {
     console.error("Error al eliminar el evento:", error);
     response.status(500).json({ message: "Error interno del servidor" });
