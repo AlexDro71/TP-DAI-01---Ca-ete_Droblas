@@ -21,7 +21,8 @@ router.get("/", async (request, response) => {
 router.get("/:id", async (request, response) => {
     try {
       const id = request.params.id;
-      if(validaciones.existeObjeto(`locations`, id)){
+      console.log(await validaciones.existeObjeto(`locations`, id))
+      if(!await validaciones.existeObjeto(`locations`, id)){
         return response.status(404).json({message: "Localidad del ID no existe"})
       }else{
       const locations = await locationService.getlocationById(id);

@@ -1,9 +1,14 @@
 import EventCategoryRepository from '../repositories/event-category-repository.js'; 
 export default class EventCategoryService{
-    getAllCategory = async (pageSize = 10, page = 0) =>{
+    getAllCategories = async (pageSize = 10, page = 0) =>{
         const repo = new EventCategoryRepository();
-        const returnArray = await repo.getAllCategory(pageSize, page);
-        return returnArray;
+        const returnArray = await repo.getAllCategories(pageSize, page);
+        return{
+            collection: returnArray,
+            pageSize: pageSize,
+            page: page,
+            nextPage: `http://localhost:3508/api/event_category/?limit=${parseInt(page)}&offset=${parseInt(page) + pageSize}`,
+        }
     }
     getCategoryById = async (id) =>{
         const repo = new EventCategoryRepository();
@@ -12,7 +17,7 @@ export default class EventCategoryService{
     }
     crearCategory = async (name, display_order) => {
         const repo = new EventCategoryRepository();
-        const returnArray = await repo.crearEventCategory(name, display_order);
+        const returnArray = await repo.crearCategory(name, display_order);
         return returnArray;
     }
     putCategory = async (id, name, display_order)  => {

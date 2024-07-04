@@ -1,6 +1,6 @@
 import pg from "pg";
 import { DBconfig } from "../../database/DB.js";
-import { log } from "console";
+
 
 
 
@@ -14,7 +14,6 @@ export default class EventRepository{
     }
    
     async BusquedaEvento(name, category, startDate, tag, page, pageSize) {
-        // Convertir page y pageSize a enteros
         const intPage = parseInt(page);
         const intPageSize = parseInt(pageSize)
 
@@ -34,15 +33,18 @@ export default class EventRepository{
         }
 
         const sql = `
-            SELECT e.id, e.name, e.description, e.id_event_category, e.id_event_location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance,
-             e.id_creator_user,
+            SELECT e.id, e.name, e.description,
+            json_build_objetc(
+                'id', ec.id,
+                'name', ec.name
+            ) AS event_category,
             json_build_object(
                 'id', el.id,
                 'name', el.name,
                 'full_address', el.full_address,
                 'latitude', el.latitude,
                 'longitude', el.longitude,
-                'max_capacity', el.max_capacity
+                'max_capacity', el.max_capacity,
             ) AS event_location,
             json_build_object(
                 'id', l.id,
@@ -58,12 +60,13 @@ export default class EventRepository{
                 'longitude', p.longitude,
                 'display_order', p.display_order
             ) AS province,
+            e.start_date, e.duration_in_minutes, e.price,
+            e.enabled_for_enrollment, e.max_assistance,
             json_build_object(
+                'username', u.username,
                 'id', u.id,
                 'first_name', u.first_name,
            'last_name', u.last_name,
-           'username', u.username,
-           'password', u.password
            ) AS creator_user,
             array(
                 SELECT json_build_object(
@@ -93,19 +96,21 @@ export default class EventRepository{
     async DetalleEvento(id){
         console.log(id)
           const sql = `SELECT E.id, E.name, E.description, E.start_date, E.duration_in_minutes, E.price, E.enabled_for_enrollment, E.max_assistance,
-          U.id AS user_id, U.username, U.first_name, U.last_name, 
+          E.id_creator_user AS id_creator_user, 
           json_build_object(
               'id', EL.id,
-              'id_location', EL.id_location
+              'id_location', EL.id_location,
               'name', EL.name,
               'full_address', EL.full_address,
               'latitude', EL.latitude,
               'longitude', EL.longitude,
-              'max_capacity', EL.max_capacity
+              'max_capacity', EL.max_capacity,
+              'id_creator_user', EL.id_creator_user
           ) AS event_location,
           json_build_object(
               'id', L.id,
               'name', L.name,
+              'id_province', L.id_province,
               'latitude', L.latitude,
               'longitude', L.longitude
           ) AS location,
@@ -117,15 +122,25 @@ export default class EventRepository{
               'longitude', P.longitude,
               'display_order', P.display_order
           ) AS province,
-          (
+          json_build_object(
+            'id', U.id,
+            'first_name', U.first_name,
+            'last_name', U.last_name,
+            'username', U.username,
+            'password', U.password
+          ) AS creator_user,
+          array(
             SELECT json_build_object(
                 'id', tags.id,
                 'name', tags.name
             )
             FROM tags  
-              JOIN event_tags ET ON tags.id = ET.id_tag
-              WHERE ET.id_event = E.id
-          ) AS tags
+          ) AS tags,
+          json_build_object(
+            'id', EC.id,
+            'name', EC.name,
+            'display_order', EC.display_order
+          ) AS event_category
       FROM events E 
       JOIN users U ON E.id_creator_user = U.id 
       JOIN event_categories EC ON E.id_event_category = EC.id 
@@ -163,8 +178,8 @@ export default class EventRepository{
             'first_name', U.first_name,
             'last_name', U.last_name,
             'username', U.username,
-            'longitude', el.longitude,
-            'max_capacity', el.max_capacity
+            'longitude', er.longitude,
+            'max_capacity', er.max_capacity
         ) AS user,
         FROM users U 
         JOIN event_enrollments ER on ER.id_user = U.id 
@@ -172,7 +187,7 @@ export default class EventRepository{
         WHERE E.id = '${id}'`
         console.log(sql);
         const response = await this.DBClient.query(sql); 
-        return responsa;
+        return response.rows;
     }
    
 

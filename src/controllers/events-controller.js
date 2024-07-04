@@ -28,7 +28,7 @@ router.get("/", async (request, response) => {
   
       return response.status(200).json(BusquedaEvent);
   } catch (error) {
-     
+    console.error(error);
       return response.status(400).json("La hora sad :'v");
   }
 });
@@ -40,7 +40,7 @@ router.get("/:id", async (request, response) => {
 
     const id = request.params.id;
     const detalleEvento = await eventsService.DetalleEvento(id);
-    if (!validaciones.existeObjeto(`events`, id)) {
+    if (!await validaciones.existeObjeto(`events`, id)) {
       return response.status(404).json({ message: "No se encontró evento con el ID" });
     } else {
       return response.status(200).json(detalleEvento);
@@ -52,49 +52,44 @@ router.get("/:id", async (request, response) => {
 });
 
 //punto 5
-router.get("/:id/enrollment", (request, response) => {
-
-  const id = request.query.id;
-
-  const first = request.query.first_name;
-  const last = request.query.last_name;
-  const user = request.query.username;
-  const attended = request.query.attended;
-  const rating = request.query.rating;
-  try {
-    const ListaUsuarios = eventsService.listaUsuarios(
-      id,
-      first,
-      last,
-      user,
-      attended,
-      rating
-    );
-    return response.json(ListaUsuarios);
-  } catch (error) {
-    console.log("Un eror Papu :V");
-    return response.status(400).json("La hora sad :'v");
-  }
-});
+router.get("/:id/enrollment", async(request, respose) => {
+  const id = request.params.id
+  const first_name = request.query.first_name
+  const last_name = request.query.last_name
+  const username = request.query.username
+  const attended = request.query.attended
+  const rating = request.query.rating
+      try{
+          const usuario = await eventService.listaUsuarios(id, first_name, last_name, username, attended, rating)
+          if(usuario){
+              return respose.json(usuario)
+          } else{
+              return respose.json("No se encontro al usuario")
+          }
+      }catch(error){
+          console.error(error)
+          return respose.json("Sad papu :V")
+      }
+    })
 
 //punto 8
 router.post("/", authMiddleware, async (request, response) => {
   try {
-    const name = request.query.name;
-    const description = request.query.description;
-    const id_event_category = request.query.id_event_category;
-    const id_event_location = request.query.id_event_location;
-    const start_date = request.query.start_date;
-    const duration_in_minutes = request.query.duration_in_minutes;
-    const price = request.query.price;
-    const enabled_for_enrollment = request.query.enabled_for_enrollment;
-    const max_assistance = request.query.max_assistance
+    const name = request.body.name;
+    const description = request.body.description;
+    const id_event_category = request.body.id_event_category;
+    const id_event_location = request.body.id_event_location;
+    const start_date = request.body.start_date;
+    const duration_in_minutes = request.body.duration_in_minutes;
+    const price = request.body.price;
+    const enabled_for_enrollment = request.body.enabled_for_enrollment;
+    const max_assistance = request.body.max_assistance
     const id_creator_user = request.user.id
-    if(validaciones.menor3(name)){
+    if(await validaciones.menor3(name)){
       response.status(400).json({message: "name vacio o menor a 3 caracteres"})
-    } else if(validaciones.menor3(description)){
+    } else if(await validaciones.menor3(description)){
       response.status(400).json({message: "description vacio o menor a 3 caracteres"})
-    }else if(validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
+    }else if(await validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
       response.status(400).json({message: "max_assistance supera max capacity"})
     }else if(price<0 || duration_in_minutes<0){
       response.status(400).json({message: "price o duration_in_minutes menor a 0"})
@@ -109,24 +104,24 @@ router.post("/", authMiddleware, async (request, response) => {
 });
 router.put("/:id", authMiddleware, async (request, response) => {
   try {
-    const id = request.params;
-  const name = request.query.name;
-  const description = request.query.description;
-  const id_event_category = request.query.id_event_category;
-  const id_event_location = request.query.id_event_location;
-  const start_date = request.query.start_date;
-  const duration_in_minutes = request.query.duration_in_minutes;
-  const price = request.query.price;
-  const enabled_for_enrollment = request.query.enabled_for_enrollment;
+    const id = request.params.id;
+  const name = request.body.name;
+  const description = request.body.description;
+  const id_event_category = request.body.id_event_category;
+  const id_event_location = request.body.id_event_location;
+  const start_date = request.body.start_date;
+  const duration_in_minutes = request.body.duration_in_minutes;
+  const price = request.body.price;
+  const enabled_for_enrollment = request.body.enabled_for_enrollment;
   const max_assistance = request.query.max_assistance
   const id_creator_user = request.user.id
-  if (!validaciones.existeObjeto(`events`, id)) {
+  if (!await validaciones.existeObjeto(`events`, id)) {
     return response.status(404).json({ message: "No se encontró evento con el ID" });
-  }else if(validaciones.menor3(name)){
+  }else if(await validaciones.menor3(name)){
     response.status(400).json({message: "name vacio o menor a 3 caracteres"})
-  } else if(validaciones.menor3(description)){
+  } else if(await validaciones.menor3(description)){
     response.status(400).json({message: "description vacio o menor a 3 caracteres"})
-  }else if(validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
+  }else if(await validaciones.asistenciaMayorACapacidad(max_assistance, id_event_location)){
     response.status(400).json({message: "max_assistance supera max capacity"})
   }else if(price<0 || duration_in_minutes<0){
     response.status(400).json({message: "price o duration_in_minutes menor a 0"})
@@ -142,9 +137,9 @@ router.put("/:id", authMiddleware, async (request, response) => {
 router.delete("/:id", authMiddleware, async (request, response) => {
   try {
     const id = request.params.id;
-    if (!validaciones.existeObjeto(`events`, id)) {
+    if (await !validaciones.existeObjeto(`events`, id)) {
       return response.status(404).json({ message: "No se encontró evento con el ID" });
-    }else if(validaciones.min1Usuario(id)){
+    }else if(await validaciones.min1Usuario(id)){
       return response.status(404).json({message: "Hay minimo 1 usuario registrado al evento"})
     }
     else{

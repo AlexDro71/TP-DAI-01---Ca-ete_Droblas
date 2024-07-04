@@ -7,9 +7,9 @@ const validaciones = new Validaciones();
 //punto 6
 router.post("/login", async (request, response) => {
   try {
-    const username = request.query.username;
-    const password = request.query.password;
-    if(await usersService.validarMail(username) == false){
+    const username = request.body.username;
+    const password = request.body.password;
+    if(!await usersService.validarMail(username)){
       response.status(400).json({
         success: false,
         message: "El email es invalido.",
@@ -39,21 +39,21 @@ router.post("/login", async (request, response) => {
 
 router.post("/register", async (request, response) => {
   try {
-    const first_name = request.query.last_name;
-    const last_name = request.query.first_name;
-    const username = request.query.username;
-    const password = request.query.password;
+    const first_name = request.body.first_name;
+    const last_name = request.body.last_name;
+    const username = request.body.username;
+    const password = request.body.password;
     const valido = await usersService.validarMail(username)
     if(!valido){
       response.status(400).json({message: "Username(email) no valido."} )
-    }else if(validaciones.menor3(first_name)){
+    }else if(await validaciones.menor3(first_name)){
       response.status(400).json({message: "first_name vacio o menor a 3 caracteres"} )
-    }else if(validaciones.menor3(last_name)){
+    }else if(await validaciones.menor3(last_name)){
       response.status(400).json({message: "last_name vacio o menor a 3 caracteres"} )
-    }else if(validaciones.menor3(password)){
+    }else if(await validaciones.menor3(password)){
       response.status(400).json({message: "password vacio o menor a 3"} )
     }
-    const nuevoUser = await usersService.crearUsuario(
+   await usersService.crearUsuario(
       first_name,
       last_name,
       username,

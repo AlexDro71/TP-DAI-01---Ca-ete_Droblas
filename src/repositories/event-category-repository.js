@@ -11,54 +11,35 @@ export default class EventCategoryRepository{
 
     async crearCategory(name, display_order) {
         const sql = `INSERT INTO event_categories (name, display_order)
-            VALUES ($1, $2)
+            VALUES ('${name}', '${display_order}')
             RETURNING *`;
-        const { rows } = await this.DBClient.query(sql, [name, display_order]);
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+        const response = await this.DBClient.query(sql);
+        return response.rows
     }
 
     async getAllCategories(pageSize, page) {
-        const offset = pageSize * page;
         const sql = `SELECT * FROM event_categories
             ORDER BY id
-            LIMIT $1 OFFSET $2`;
-        const { rows } = await this.DBClient.query(sql, [pageSize, offset]);
-        
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+            LIMIT '${page}' OFFSET '${pageSize}'`;
+            const response = await this.DBClient.query(sql);
+            return response.rows
     }
 
     async getCategoryById(id,) {
-        const sql = `SELECT * FROM event_categories
-            WHERE id = $1`;
-        const { rows } = await this.DBClient.query(sql, [id]);
-        
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
+        const sql = `SELECT * 
+        FROM event_categories
+        WHERE id = '${id}'`;
+        const response = await this.DBClient.query(sql);
+        return response.rows
     }
 
     async putProvince(id, name, display_order) {
         const sql = `UPDATE event_categories
-            SET name = $2, display_order = $3
-            WHERE id = $1
+            SET name = '${name}', display_order = '${display_order}'
+            WHERE id = '${id}'
             RETURNING *`;
-        const { rows } = await this.DBClient.query(sql, [id, name, display_order]);
-        if(result.rows.length > 0){
-            return rows[0];
-        }else{
-            return console.error("Sad Papu :V");
-        }
-        
+            const response = await this.DBClient.query(sql);
+            return response.rows  
     }
 
     async borrarCategory(id) {

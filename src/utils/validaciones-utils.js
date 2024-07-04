@@ -1,8 +1,17 @@
+import { DBconfig } from "../../database/DB.js";
+import pg from "pg"
 export default class Validaciones{
+    constructor () {
+        const {Client} = pg;
+        this.DBClient = new Client(DBconfig);
+        this.DBClient.connect();
+        
+    }
     async existeObjeto(tabla, id){
         const sql = `SELECT  * FROM `+tabla+` WHERE id='${id}'`
         const response = await this.DBClient.query(sql);
-        if(response.rows.length>0){
+        console.log(response.rowCount)
+        if(response.rowCount>0){
             return true;
         }else{
             return false;
@@ -18,13 +27,17 @@ export default class Validaciones{
 
     }
 
+    
+
     async notANumber(campo){
         return isNaN(campo);
     }
-
+    
     async asistenciaMayorACapacidad(max_assistance, id_event_location){
         const sql = `SELECT max_capacity FROM event_locations WHERE id = '${id_event_location}'`
+        console.log(sql)
         const response = await this.DBClient.query(sql);
+        console.log(response.rows[0].max_capacity)
         if(max_assistance > parseInt(response.rows[0].max_capacity)){
             return true;
         }else{
@@ -35,8 +48,9 @@ export default class Validaciones{
 
     async min1Usuario(id){
             const sql = `SELECT COUNT(*) FROM event_enrollments WHERE id_Event = '${id}'`
-            const response = await this.client.query(sql)
-            if(response.rows>0){
+            const response = await this.DBClient.query(sql);
+            console.log(response)
+            if(response.rowsCount>0){
                 return true;
             }else{
                 return false;
