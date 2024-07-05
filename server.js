@@ -15,8 +15,8 @@ app.use("/api/user", usersController);
 app.use("/api/event", eventController);
 app.use("/api/province", provinceController);
 app.use("/api/location", locationController);
-app.use("/api/event_location", eventlocationController);
-app.use("/api/event_category", eventcategoryController);
+app.use("/api/event-location", eventlocationController);
+app.use("/api/event-category", eventcategoryController);
 const port = 3508;
 
 app.listen(port, () => { 

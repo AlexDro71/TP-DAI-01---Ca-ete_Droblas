@@ -107,6 +107,7 @@ router.post("/", authMiddleware, async (request, response) => {
 router.put("/:id", authMiddleware, async (request, response) => {
   try {
     const id = request.params.id;
+
   const name = request.body.name;
   const description = request.body.description;
   const id_event_category = request.body.id_event_category;
@@ -115,7 +116,7 @@ router.put("/:id", authMiddleware, async (request, response) => {
   const duration_in_minutes = request.body.duration_in_minutes;
   const price = request.body.price;
   const enabled_for_enrollment = request.body.enabled_for_enrollment;
-  const max_assistance = request.query.max_assistance
+  const max_assistance = request.body.max_assistance
   const id_creator_user = request.user.id
   if (!await validaciones.existeObjeto(`events`, id)) {
     return response.status(404).json({ message: "No se encontró evento con el ID" });
@@ -145,8 +146,8 @@ router.delete("/:id", authMiddleware, async (request, response) => {
       return response.status(404).json({message: "Hay minimo 1 usuario registrado al evento"})
     }
     else{
-    await eventsService.borrarEvent(id);
-    return response.status(200).json({message: "se elimino correctamente"});
+      await eventsService.borrarEvent(id);
+      return response.status(200).json({message: "se elimino correctamente"});
     }
   } catch (error) {
     console.error("Error al eliminar el evento:", error);

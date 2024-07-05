@@ -38,7 +38,7 @@ router.get("/:id", async (request, response) => {
       const pageSize = request.query.limit;
       const page = request.query.offset;
         const id = request.params.id;
-        if(validaciones.existeObjeto(`locations`, id)){
+        if(!await validaciones.existeObjeto(`locations`, id)){
           return response.status(404).json({message: "Localidad del ID no existe"})
         }else{
         const eventLocation = await locationService.getAllEventLocationByLocationId(id, page, pageSize);

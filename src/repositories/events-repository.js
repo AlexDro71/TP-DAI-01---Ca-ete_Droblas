@@ -29,59 +29,63 @@ export default class EventRepository{
         }
 
         const sql = `
-            SELECT e.id, e.name, e.description,
-            json_build_objetc(
-                'id', ec.id,
-                'name', ec.name
-            ) AS event_category,
-            json_build_object(
-                'id', el.id,
-                'name', el.name,
-                'full_address', el.full_address,
-                'latitude', el.latitude,
-                'longitude', el.longitude,
-                'max_capacity', el.max_capacity,
-            ) AS event_location,
-            json_build_object(
-                'id', l.id,
-                'name', l.name,
-                'latitude', l.latitude,
-                'longitude', l.longitude
-            ) AS location,
-            json_build_object(
-                'id', p.id,
-                'name', p.name,
-                'full_name', p.full_name,
-                'latitude', p.latitude,
-                'longitude', p.longitude,
-                'display_order', p.display_order
-            ) AS province,
-            e.start_date, e.duration_in_minutes, e.price,
-            e.enabled_for_enrollment, e.max_assistance,
-            json_build_object(
-                'username', u.username,
-                'id', u.id,
-                'first_name', u.first_name,
-           'last_name', u.last_name,
-           ) AS creator_user,
-            array(
-                SELECT json_build_object(
+        SELECT e.id, e.name, e.description,
+        json_build_object(
+            'id', ec.id,
+            'name', ec.name
+        ) AS event_category,
+        json_build_object(
+            'id', el.id,
+            'name', el.name,
+            'full_address', el.full_address,
+            'latitude', el.latitude,
+            'longitude', el.longitude,
+            'max_capacity', el.max_capacity
+        ) AS event_location,
+        json_build_object(
+            'id', l.id,
+            'name', l.name,
+            'latitude', l.latitude,
+            'longitude', l.longitude
+        ) AS location,
+        json_build_object(
+            'id', p.id,
+            'name', p.name,
+            'full_name', p.full_name,
+            'latitude', p.latitude,
+            'longitude', p.longitude,
+            'display_order', p.display_order
+        ) AS province,
+        e.start_date, e.duration_in_minutes, e.price,
+        e.enabled_for_enrollment, e.max_assistance,
+        json_build_object(
+            'username', u.username,
+            'id', u.id,
+            'first_name', u.first_name,
+            'last_name', u.last_name
+        ) AS creator_user,
+        (
+            SELECT json_agg(
+                json_build_object(
                     'id', tags.id,
                     'name', tags.name
                 )
-                FROM tags
-            ) AS tags  
-            FROM events e    
-            JOIN users u ON e.id_creator_user = u.id
-            JOIN event_categories ec ON e.id_event_category = ec.id
-            JOIN event_tags et ON e.id = et.id_event
-            JOIN tags t ON et.id_tag = t.id
-            JOIN event_locations el ON e.id_event_location = el.id 
-            JOIN locations l ON el.id_location = l.id
+            )
+            FROM event_tags et
+            JOIN tags ON et.id_tag = tags.id
+            WHERE et.id_event = e.id
+        ) AS tags  
+        FROM events e    
+        JOIN users u ON e.id_creator_user = u.id
+        JOIN event_categories ec ON e.id_event_category = ec.id
+        JOIN event_locations el ON e.id_event_location = el.id 
+        JOIN locations l ON el.id_location = l.id
         JOIN provinces p ON l.id_province = p.id
-            WHERE 1=1 `
-            +queryAgregado+
-            ` LIMIT ${pageSize} OFFSET ${page}`;
+        WHERE 1=1 ${queryAgregado}
+        LIMIT ${pageSize} OFFSET ${page};
+    `;
+    
+    
             console.log(sql)
         const response = await this.DBClient.query(sql);
         return response.rows;
@@ -152,7 +156,7 @@ export default class EventRepository{
     async listaUsuarios(id, first, last, username, attended, rating, pageSize, page){
         let queryAgregado=``
         if(first != null){
-            queryAgregado += `AND E.first_name = "${first}"`
+            queryAgregado += `AND U.first_name = "${first}"`
         }
         if(last != null){
             queryAgregado += `AND U.last_name = "${last}"`
@@ -199,7 +203,7 @@ export default class EventRepository{
     `;
     console.log(sql)
     const response = await this.DBClient.query(sql);
-    return response.rows
+    return response.rows[0]
     }
 
     async putEvent(eventId, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) {
@@ -209,8 +213,9 @@ export default class EventRepository{
         price = '${price}', enabled_for_enrollment = '${enabled_for_enrollment}', max_assistance = '${max_assistance}', id_creator_user = '${id_creator_user}'
         WHERE id = '${eventId}'
         RETURNING * `;
+        console.log(sql)
     const response = await this.DBClient.query(sql);
-    return response.rows
+    return response.rows[0]
     
     }
     async borrarEvent(eventId) {
