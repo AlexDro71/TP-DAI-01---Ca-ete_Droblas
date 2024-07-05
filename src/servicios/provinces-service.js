@@ -9,7 +9,7 @@ export default class ProvinceService{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
-            nextPage: `http://localhost:3508/api/province/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
+            nextPage: `http://localhost:3508/api/province/?limit=${parseInt(pageSize)}&offset=${parseInt(page+1) * parseInt(pageSize)}`,
         };
     }
     getProvinceById = async (id) =>{
@@ -24,7 +24,7 @@ export default class ProvinceService{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
-            nextPage: `http://localhost:3508/api/province/${id}/locations/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + pageSize}`,
+            nextPage: `http://localhost:3508/api/province/${id}/locations/?limit=${parseInt(pageSize)}&offset=${parseInt(page+1) * parseInt(pageSize)}`,
         };
     }
 

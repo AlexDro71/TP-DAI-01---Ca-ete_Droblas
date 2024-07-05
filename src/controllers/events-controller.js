@@ -10,8 +10,8 @@ const validaciones = new Validaciones();
 // punto 2 y 3
 router.get("/", async (request, response) => {
 
-  const pageSize = request.query.offset;
-  const page = request.query.limit;
+  const pageSize = request.query.limit;
+  const page = request.query.offset;
   const name = request.query.name;
   const category = request.query.category;
   const startDate = request.query.startDate;

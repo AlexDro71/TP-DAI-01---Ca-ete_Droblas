@@ -23,11 +23,10 @@ export default class ProvinceRepository{
 
     async getAllProvinces(pageSize, page) {
         const offset = pageSize * page;
-        const intPage = parseInt(page);
-        const intPageSize = parseInt(pageSize)
+
         const sql = `SELECT * FROM provinces
             ORDER BY id
-            LIMIT ${intPage} OFFSET ${intPageSize}`;
+            LIMIT ${pageSize} OFFSET ${page}`;
         const response = await this.DBClient.query(sql);
         return response.rows
     }
@@ -41,13 +40,11 @@ export default class ProvinceRepository{
     }
 
     async getAllLocationsByProvinceId(id, page, pageSize){
-        const intPage = parseInt(page);
-        const intPageSize = parseInt(pageSize)
         const sql = `SELECT  L.id AS location_id, L.name AS location_name, L.latitude, L.longitude, P.id AS province_id, P.name AS province_name
     FROM Locations L 
     INNER JOIN Provinces P ON L.id_province = P.id 
     WHERE P.id = ${id}
-    LIMIT ${intPage} OFFSET ${intPageSize}
+    LIMIT ${pageSize} OFFSET ${page}
     `;
         console.log(sql)
     

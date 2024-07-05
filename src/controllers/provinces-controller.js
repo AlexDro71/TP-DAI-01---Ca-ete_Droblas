@@ -28,8 +28,8 @@ router.post("/", async (request, response) => {
 
   router.get("/", async (request, response) => {
     try {
-      const pageSize = request.query.offset;
-      const page = request.query.limit;
+      const pageSize = request.query.limit;
+      const page = request.query.offset;
       const provinces = await provinceService.getAllProvinces(pageSize, page);
       response.json(provinces);
     } catch (error) {
@@ -57,8 +57,8 @@ router.post("/", async (request, response) => {
   router.get("/:id/locations", async (request,response)=>{
     try {
  
-      const pageSize = request.query.offset;
-      const page = request.query.limit;
+      const pageSize = request.query.limit;
+      const page = request.query.offset;
       const id = request.params.id;
       if (await !validaciones.existeObjeto(`provinces`, id)) {
         response.status(404).json({ message: "Provincia del ID no encontrada" });

@@ -14,10 +14,6 @@ export default class EventRepository{
     }
    
     async BusquedaEvento(name, category, startDate, tag, page, pageSize) {
-        const intPage = parseInt(page);
-        const intPageSize = parseInt(pageSize)
-
-  
         let queryAgregado=``
         if(name != null){
             queryAgregado += `AND e.name = '${name}'`
@@ -85,7 +81,7 @@ export default class EventRepository{
         JOIN provinces p ON l.id_province = p.id
             WHERE 1=1 `
             +queryAgregado+
-            ` LIMIT ${intPage} OFFSET ${intPageSize}`;
+            ` LIMIT ${pageSize} OFFSET ${page}`;
             console.log(sql)
         const response = await this.DBClient.query(sql);
         return response.rows;

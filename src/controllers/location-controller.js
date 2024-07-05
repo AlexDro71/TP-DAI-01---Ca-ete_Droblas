@@ -7,8 +7,8 @@ const router = express.Router();
 const validaciones = new Validaciones();
 //punto 11
 router.get("/", async (request, response) => {
-  const pageSize = request.query.offset;
-  const page = request.query.limit;
+  const pageSize = request.query.limit;
+  const page = request.query.offset;
 
   try {
     const locations = await locationService.getAlllocations(page, pageSize);
@@ -35,8 +35,8 @@ router.get("/:id", async (request, response) => {
   });
   router.get("/:id/event-location", authMiddleware, async (request, response)=> {
     try{
-      const pageSize = request.query.offset;
-      const page = request.query.limit;
+      const pageSize = request.query.limit;
+      const page = request.query.offset;
         const id = request.params.id;
         if(validaciones.existeObjeto(`locations`, id)){
           return response.status(404).json({message: "Localidad del ID no existe"})

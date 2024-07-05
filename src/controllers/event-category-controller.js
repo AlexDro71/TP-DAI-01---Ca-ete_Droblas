@@ -22,8 +22,8 @@ router.post("/", async (request, response) => {
     
 router.get("/", async (request, response) => {
       try {
-        const pageSize = request.query.offset;
-        const page = request.query.limit;
+        const pageSize = request.query.limit;
+        const page = request.query.offset;
         const categorias = await eventcategoryService.getAllCategories(pageSize, page);
         return response.status(200).json(categorias);
       } catch (error) {

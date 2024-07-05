@@ -19,8 +19,7 @@ export default class EventCategoryRepository{
 
     async getAllCategories(pageSize, page) {
         const sql = `SELECT * FROM event_categories
-            ORDER BY id
-            LIMIT '${page}' OFFSET '${pageSize}'`;
+            LIMIT '${pageSize}' OFFSET '${page}'`;
             const response = await this.DBClient.query(sql);
             return response.rows
     }

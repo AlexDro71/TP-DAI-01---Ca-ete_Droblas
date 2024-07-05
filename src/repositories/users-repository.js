@@ -9,8 +9,8 @@ export default class UsersRepository{
     }
     
     async crearUsuario(first_name, last_name, username, password){
-        const sql = `INSERT INTO users (first_name, last_name, username, password)
-        VALUES ('${first_name}', '${last_name}', '${username}', '${password}')
+        const sql = `INSERT INTO users (id, first_name, last_name, username, password)
+        VALUES (nextval('users_id_seq'), '${first_name}', '${last_name}', '${username}', '${password}')
         RETURNING *;`;
             console.log(sql)
             const response = await this.DBClient.query(sql);

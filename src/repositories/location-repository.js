@@ -12,7 +12,7 @@ export default class LocationRepository{
     async getAllLocations(page, pageSize){
         const sql = `SELECT *
         FROM locations 
-        limit '${page}' offset '${pageSize}'`;
+        limit '${pageSize}' offset '${page}'`;
         const response = await this.DBClient.query(sql); 
         return response.rows;
 
@@ -33,7 +33,7 @@ export default class LocationRepository{
         FROM event_locations EL 
         INNER JOIN locations L ON EL.id_location = L.id
         WHERE L.id = ${id}
-        limit '${page}' offset '${pageSize}'`
+        limit '${pageSize}' offset '${page}'`
         console.log(sql)
         const response = await this.DBClient.query(sql); 
         return response.rows;
