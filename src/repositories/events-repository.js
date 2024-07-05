@@ -156,19 +156,19 @@ export default class EventRepository{
     async listaUsuarios(id, first, last, username, attended, rating, pageSize, page){
         let queryAgregado=``
         if(first != null){
-            queryAgregado += `AND U.first_name = "${first}"`
+            queryAgregado += `AND U.first_name = '${first}'`
         }
         if(last != null){
-            queryAgregado += `AND U.last_name = "${last}"`
+            queryAgregado += `AND U.last_name = '${last}'`
         }
         if(username != null){
-            queryAgregado += `AND U.username = "${username}"`
+            queryAgregado += `AND U.username = '${username}'`
         }
         if(attended != null){
-            queryAgregado += `AND ER.attended = "${attended}"`
+            queryAgregado += `AND ER.attended = '${attended}'`
         }
         if(rating != null){
-            queryAgregado += `AND ER.rating = "${rating}"`
+            queryAgregado += `AND ER.rating = '${rating}'`
         }
 
         

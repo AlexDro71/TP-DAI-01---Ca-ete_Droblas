@@ -192,13 +192,9 @@ router.patch("/:id/enrollment/:rating", authMiddleware, async (request, response
  
     try {
       const { id, rating } = request.params;
-      const event = await eventsService.getEventById(id);
-      if (event == null) {
-        response.status(404).json({ message: "Evento no encontrado" });
-      } else if (rating < 1 || rating > 10 || eventsService.noFinalizo() || eventsService.estadoRegistro(id)) {
-        response
-          .status(400)
-          .json({ message: "Errores varios" });
+      const event = await eventsService.getEventById(`events`, id);
+      if (!await validaciones.existeObjeto()){
+        return response.status(404).json({ message: "No se encontró evento con el ID" });
       } else {
         const rate = eventsService.ratingEvento(id, rating);
         response.status(200).json(rate);
