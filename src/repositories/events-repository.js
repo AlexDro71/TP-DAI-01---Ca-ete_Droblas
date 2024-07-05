@@ -149,7 +149,7 @@ export default class EventRepository{
           return response.rows;
     }
     //Punto 5
-    async listaUsuarios(id, first, last, username, attended, rating){
+    async listaUsuarios(id, first, last, username, attended, rating, pageSize, page){
         let queryAgregado=``
         if(first != null){
             queryAgregado += `AND E.first_name = "${first}"`
@@ -168,19 +168,21 @@ export default class EventRepository{
         }
 
         
-        const sql = `SELECT ER.id, ER.id_event, ER.id_user, ER.description, ER.attended, ER.rating
+        const sql = `SELECT ER.id, ER.id_event, ER.id_user, 
         json_build_object(
             'id', U.id,
             'first_name', U.first_name,
             'last_name', U.last_name,
             'username', U.username,
-            'longitude', er.longitude,
-            'max_capacity', er.max_capacity
+            'password', U.password
         ) AS user,
+        ER.description, ER.attended, ER.rating
         FROM users U 
         JOIN event_enrollments ER on ER.id_user = U.id 
         JOIN events E on E.id = ER.id_event
-        WHERE E.id = '${id}'`
+        WHERE E.id = '${id}' ` 
+        + queryAgregado +
+        ` LIMIT ${pageSize} OFFSET ${page}`
         console.log(sql);
         const response = await this.DBClient.query(sql); 
         return response.rows;

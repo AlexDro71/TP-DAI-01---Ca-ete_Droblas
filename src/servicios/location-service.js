@@ -7,7 +7,7 @@ export default class LocationService{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
-            nextPage: `http://localhost:3508/api/location/?limit=${parseInt(pageSize)}&offset=${parseInt(page+1) * parseInt(pageSize)}`,
+            nextPage: `http://localhost:3508/api/location/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + parseInt(pageSize)}`,
         }
     }
     getlocationById = async (id) =>{

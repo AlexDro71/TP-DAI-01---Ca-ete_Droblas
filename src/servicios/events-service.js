@@ -9,7 +9,7 @@ export default class EventsService{
         collection: returnArray,
         pageSize: pageSize,
         page: page,
-        nextPage: `http://localhost:3508/api/event/?limit=${parseInt(pageSize)}&offset=${parseInt(page+1) * parseInt(pageSize)}`,
+        nextPage: `http://localhost:3508/api/event/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + parseInt(pageSize)}`,
     };
     }
 
@@ -18,10 +18,15 @@ export default class EventsService{
         const returnArray = await repo.DetalleEvento(id);
         return returnArray;
     }
-    async listaUsuarios(id, first_name, last_name, username, attended, rating){
+    async listaUsuarios(id, first_name, last_name, username, attended, rating, pageSize, page){
         const repo = new EventRepository();
-        const returnArray = await repo.listaUsuarios(id, first_name, last_name, username, attended, rating)
-        return parsedDB
+        const returnArray = await repo.listaUsuarios(id, first_name, last_name, username, attended, rating, pageSize, page)
+        return {
+            collection: returnArray,
+            pageSize: pageSize,
+            page: page,
+            nextPage: `http://localhost:3508/api/event/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + parseInt(pageSize)}`,
+        };
     }
     crearEvent = async(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) =>{
         const repo = new EventRepository();

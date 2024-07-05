@@ -59,8 +59,10 @@ router.get("/:id/enrollment", async(request, respose) => {
   const username = request.query.username
   const attended = request.query.attended
   const rating = request.query.rating
+  const pageSize = request.query.limit
+  const page = request.query.offset
       try{
-          const usuario = await eventService.listaUsuarios(id, first_name, last_name, username, attended, rating)
+          const usuario = await eventsService.listaUsuarios(id, first_name, last_name, username, attended, rating, pageSize, page)
           if(usuario){
               return respose.json(usuario)
           } else{
@@ -154,22 +156,15 @@ router.delete("/:id", authMiddleware, async (request, response) => {
 
 //punto 9
 
-router.post("/:id/enrollment/:entero", authMiddleware, async (request, response) => {
+router.post("/:id/enrollment", authMiddleware, async (request, response) => {
   const id_event = request.params.id
   const id_user = request.user.id
   const description = request.query.description
   const attended = request.query.attended
   const observations = request.query.observations
   const rating = request.params.entero
-
-
+  const registration_date_time = await eventsService.conseguirHora()
   try {
-    const registration_date_time = await eventsService.conseguirHora()
-  //   if (id_event == null) {
-  //     response.status(404).json("Id no encontrado");
-  //   } else if (eventsService.maxExceed() || eventsService.datePast() || eventsService.noHabilitado() ||eventsService.estadoRegistro(id_user)){
-  //     return response.status(400).json({message: "todo mal"}) 
-  // }else {
       const nuevoEnrollment = await eventsService.registerUser(id_event, id_user, description, attended, observations, rating, registration_date_time);
       response.status(201).json(nuevoEnrollment);
     
@@ -183,11 +178,6 @@ router.delete("/:id/enrollment", authMiddleware, async (request, response) => {
   const id_event = request.params.id
   const id_user = request.user.id
   try {
-    //     if (eventsService.estadoRegistro(id_user), eventsService.datePast()) {
-    //   return response.status(400).json({message: "Errores"})
-    // } else if(id_event == null){
-    //   return response.status(404).json({message: "ID no encontrado"})
-    // }else{
       const eliminado = await eventsService.unregisterUser(id_event, id_user);
       response.status(200).json({message: "Se elimino correctamente", ...eliminado});
   } catch (error) {

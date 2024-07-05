@@ -7,7 +7,7 @@ export default class EventCategoryService{
             collection: returnArray,
             pageSize: pageSize,
             page: page,
-            nextPage: `http://localhost:3508/api/event_category/?limit=${parseInt(pageSize)}&offset=${parseInt(page+1) * parseInt(pageSize)}`,
+            nextPage: `http://localhost:3508/api/event_category/?limit=${parseInt(pageSize)}&offset=${parseInt(page) + parseInt(pageSize)}`,
         }
     }
     getCategoryById = async (id) =>{
