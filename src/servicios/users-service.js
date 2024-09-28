@@ -3,49 +3,29 @@ import UsersRepository from './../../src/repositories/users-repository.js';
 
 export default class UsersService {
     crearUsuario = async (first_name, last_name, username, password) => {
-        const repo = new UsersRepository();
-        const returnArray = await repo.crearUsuario(first_name, last_name, username, password);
-        return returnArray;
+      const repo = new UsersRepository();
+      return await repo.crearUsuario(first_name, last_name, username, password);
     }
-recibirToken = async (username, password) => {
-    const repo = new UsersRepository();
-    const validarUsuario = await repo.usuarioExiste(username, password); 
-    if(validarUsuario){
-       const token = this.generarToken(validarUsuario[0].id, validarUsuario[0].username); 
-        return token; 
-    } else {
+  
+    recibirToken = async (username, password) => {
+      const repo = new UsersRepository();
+      const validarUsuario = await repo.usuarioExiste(username, password); 
+      if (validarUsuario) {
+        const token = this.generarToken(validarUsuario[0].id, validarUsuario[0].username); 
+        return [token.token, validarUsuario[0].username];  // Asegúrate de que estás pasando el username correcto
+      } else {
         return false;
-    }
-
-    }
-    generarToken = async (id, username) =>{
-        console.log("id:", id)
-        const payload = {
-            id: id,
-            username: username
-        }
-        
-        const secretKey = 'UmDoisTreisTriesDoisUmoTodoMundoSobreDoisRaizEmCadaUno'
-        
-        const options = {
-            expiresIn : "4 Hours",
-            issuer : 'santiago'
-        }
-        
-        const token = jwt.sign(payload, secretKey, options)
+      }
+  }
+      generarToken = (id, username) => {
+        const payload = { id, username };
+        const secretKey = 'UmDoisTreisTriesDoisUmoTodoMundoSobreDoisRaizEmCadaUno';
+        const options = { expiresIn: "4 Hours", issuer: 'santiago' };
+        return jwt.sign(payload, secretKey, options);
+      }
+      validarMail = (email) => {
+        const regex = /^[\w.%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        return regex.test(email);
+      }
     
-        return token;
-        }
-    validarMail = async(email) => {
-        const regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-        if(regex.test(email)){
-            return true;
-        }else{
-            return false;
-        }
-    
-    }
-        
-
-
 }

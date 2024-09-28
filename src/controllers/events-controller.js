@@ -8,14 +8,15 @@ const eventsService = new EventsService();
 const validaciones = new Validaciones();
 
 // punto 2 y 3
+// events-controller.js
 router.get("/", async (request, response) => {
+  const pageSize = request.query.limit || 10;
+  const page = request.query.offset || 0; 
+  const name = request.query.name || null; 
+  const category = request.query.category || null; 
+  const startDate = request.query.startDate || null; 
+  const tag = request.query.tag || null; 
 
-  const pageSize = request.query.limit;
-  const page = request.query.offset;
-  const name = request.query.name;
-  const category = request.query.category;
-  const startDate = request.query.startDate;
-  const tag = request.query.tag;
   try {
       const BusquedaEvent = await eventsService.BusquedaEvento(
           name,
@@ -25,13 +26,13 @@ router.get("/", async (request, response) => {
           page,
           pageSize
       );
-  
       return response.status(200).json(BusquedaEvent);
   } catch (error) {
-    console.error(error);
-      return response.status(400).json("La hora sad :'v");
+      console.error(error);
+      return response.status(500).json("Error en la búsqueda de eventos");
   }
 });
+
 
 
 //punto 4

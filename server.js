@@ -9,6 +9,7 @@ import eventcategoryController from "./src/controllers/event-category-controller
 
 const app=express();
 
+app.use(cors());
 app.use(express.json());
 app.use('/front', express.static('public'));
 app.use("/api/user", usersController);
